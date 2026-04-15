@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "nombre": "Monstera Deliciosa",
+    "nombreCientifico": "Monstera deliciosa",
+    "precio": 450,
+    "categoria": "Interior",
+    "imagen": "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=800",
+    "cuidados": {
+      "riego": "Moderado (Cada 7-10 días)",
+      "luz": "Luz indirecta brillante",
+      "dificultad": "Fácil",
+      "humedad": "Alta",
+      "toxicidad": "Tóxica para mascotas"
+    },
+    "descripcion": "La reina del interiorismo. Sus hojas con agujeros naturales aportan un aire selvático y elegante a cualquier espacio."
+  },
+  {
+    "id": 2,
+    "nombre": "Sansevieria",
+    "nombreCientifico": "Dracaena trifasciata",
+    "precio": 280,
+    "categoria": "Resistente",
+    "imagen": "https://images.unsplash.com/photo-1593433561991-325519804035?q=80&w=800",
+    "cuidados": {
+      "riego": "Bajo (Cada 15-20 días)",
+      "luz": "Soporta poca luz a sol directo",
+      "dificultad": "Muy Fácil",
+      "humedad": "Baja",
+      "toxicidad": "Tóxica para mascotas"
+    },
+    "descripcion": "Casi indestructible. Ideal para purificar el aire y perfecta para quienes olvidan regar sus plantas."
+  },
+  {
+    "id": 3,
+    "nombre": "Poto (Epipremnum)",
+    "nombreCientifico": "Epipremnum aureum",
+    "precio": 190,
+    "categoria": "Colgante",
+    "imagen": "https://images.unsplash.com/photo-1597055181300-e3633a207519?q=80&w=800",
+    "cuidados": {
+      "riego": "Moderado (Sustrato seco al tacto)",
+      "luz": "Media (Luz indirecta)",
+      "dificultad": "Fácil",
+      "humedad": "Media",
+      "toxicidad": "Tóxica para mascotas"
+    },
+    "descripcion": "Una planta colgante de crecimiento rápido. Sus hojas en forma de corazón con tonos dorados son un clásico."
+  },
+  {
+    "id": 4,
+    "nombre": "Echeveria Blue",
+    "nombreCientifico": "Echeveria elegans",
+    "precio": 120,
+    "categoria": "Suculenta",
+    "imagen": "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?q=80&w=800",
+    "cuidados": {
+      "riego": "Muy bajo (Solo cuando el suelo esté seco)",
+      "luz": "Sol directo",
+      "dificultad": "Fácil",
+      "humedad": "Baja",
+      "toxicidad": "Segura para mascotas"
+    },
+    "descripcion": "Pequeña suculenta en forma de roseta con un tono azulado cerúleo. Perfecta para escritorios con mucha luz."
+  },
+  {
+    "id": 5,
+    "nombre": "Ficus Lyrata",
+    "nombreCientifico": "Ficus lyrata",
+    "precio": 850,
+    "categoria": "Interior",
+    "imagen": "https://images.unsplash.com/photo-1545239351-ef35f43d514b?q=80&w=800",
+    "cuidados": {
+      "riego": "Estructural (No encharcar)",
+      "luz": "Indirecta muy brillante",
+      "dificultad": "Media",
+      "humedad": "Alta",
+      "toxicidad": "Tóxica para mascotas"
+    },
+    "descripcion": "Conocida como Higuera de hoja de violín. Es una pieza de declaración por sus enormes y brillantes hojas verdes."
+  },
+  {
+    "id": 6,
+    "nombre": "Cactus de Asiento",
+    "nombreCientifico": "Echinocactus grusonii",
+    "precio": 320,
+    "categoria": "Exterior",
+    "imagen": "https://images.unsplash.com/photo-1520412099561-648319783e74?q=80&w=800",
+    "cuidados": {
+      "riego": "Mínimo (Casi nulo en invierno)",
+      "luz": "Pleno sol",
+      "dificultad": "Muy Fácil",
+      "humedad": "Muy baja",
+      "toxicidad": "Segura (pero cuidado con espinas)"
+    },
+    "descripcion": "Un cactus globular icónico con espinas amarillas brillantes. Aporta una textura desértica única."
+  },
+  {
+    "id": 7,
+    "nombre": "Helecho Boston",
+    "nombreCientifico": "Nephrolepis exaltata",
+    "precio": 250,
+    "categoria": "Humedad",
+    "imagen": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800",
+    "cuidados": {
+      "riego": "Frecuente (Suelo siempre húmedo)",
+      "luz": "Sombra o luz tamizada",
+      "dificultad": "Media",
+      "humedad": "Muy Alta",
+      "toxicidad": "Segura para mascotas"
+    },
+    "descripcion": "Sus frondas arqueadas y plumosas son perfectas para colgar en baños o zonas con alta humedad ambiental."
+  },
+  {
+    "id": 8,
+    "nombre": "Palma Areca",
+    "nombreCientifico": "Dypsis lutescens",
+    "precio": 580,
+    "categoria": "Interior",
+    "imagen": "https://images.unsplash.com/photo-1512428813834-c702c7702b78?q=80&w=800",
+    "cuidados": {
+      "riego": "Regular (2 veces por semana)",
+      "luz": "Brillante indirecta",
+      "dificultad": "Media",
+      "humedad": "Alta",
+      "toxicidad": "Segura para mascotas"
+    },
+    "descripcion": "Excelente purificador de aire que aporta un toque tropical y elegante a salas y oficinas amplias."
+  },
+  {
+    "id": 9,
+    "nombre": "Lirio de la Paz",
+    "nombreCientifico": "Spathiphyllum",
+    "precio": 310,
+    "categoria": "Interior",
+    "imagen": "https://images.unsplash.com/photo-1593691509543-c55fb32e7355?q=80&w=800",
+    "cuidados": {
+      "riego": "Regular (Te avisa bajando sus hojas)",
+      "luz": "Baja a Media",
+      "dificultad": "Fácil",
+      "humedad": "Media-Alta",
+      "toxicidad": "Tóxica para mascotas"
+    },
+    "descripcion": "Elegante planta de flores blancas. Es muy comunicativa: si necesita agua, sus hojas se caen ligeramente."
+  },
+  {
+    "id": 10,
+    "nombre": "Árbol de Jade",
+    "nombreCientifico": "Crassula ovata",
+    "precio": 220,
+    "categoria": "Suculenta",
+    "imagen": "https://nurserynisarga.in/product/jade-bonsai-plant-with-colored-pot/",
+    "cuidados": {
+      "riego": "Bajo (Cada 15 días)",
+      "luz": "Brillante o Sol directo",
+      "dificultad": "Fácil",
+      "humedad": "Baja",
+      "toxicidad": "Tóxica para mascotas"
+    },
+    "descripcion": "Simboliza la buena suerte y prosperidad. Es una suculenta arbustiva de hojas gruesas y carnosas."
+  }
+]
