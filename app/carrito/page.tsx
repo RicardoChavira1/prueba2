@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  ShoppingCart, Search, Menu, X, ChevronLeft, Trash2, 
-  Plus, Minus, CreditCard, Truck, ShieldCheck, 
-  ArrowRight, Info 
+import {
+    ShoppingCart, Search, Trash2, Plus, Minus, CreditCard,
+    ShieldCheck, CheckCircle, Loader2, Info
 } from 'lucide-react';
 
 // --- INTERFACES ---
@@ -22,13 +21,17 @@ interface GrupoCarrito extends CartItem {
     instancias: number[];
 }
 
-export default function App() {
-    // --- ESTADOS ---
+export default function CarritoPage() {
+    // --- ESTADOS BASE ---
     const [carrito, setCarrito] = useState<CartItem[]>([]);
-    const [searchTerm, setSearchTerm] = useState('');
     const [isMounted, setIsMounted] = useState(false);
 
-    // --- MANEJO DE HIDRATACIÓN Y CARGA ---
+    // --- ESTADOS DE LA FUNCIÓN DE PAGO (Punto 2) ---
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+    // --- MANEJO DE HIDRATACIÓN ---
     useEffect(() => {
         setIsMounted(true);
         const carritoGuardado = localStorage.getItem('donni-cart');
@@ -36,7 +39,6 @@ export default function App() {
             try {
                 const parsed = JSON.parse(carritoGuardado);
                 if (Array.isArray(parsed)) {
-                    // Limpiamos los precios para asegurar que sean números
                     const cleaned = parsed.map(item => ({
                         ...item,
                         precio: Number(item.precio) || 0
@@ -49,16 +51,14 @@ export default function App() {
         }
     }, []);
 
-    // Sincronización con LocalStorage cada vez que el carrito cambie
     useEffect(() => {
         if (isMounted) {
             localStorage.setItem('donni-cart', JSON.stringify(carrito));
-            // Disparar evento para que otros componentes (como el Header) se enteren
             window.dispatchEvent(new Event('storage'));
         }
     }, [carrito, isMounted]);
 
-    // --- LÓGICA DE AGRUPACIÓN (Para mostrar en la lista) ---
+    // --- LÓGICA DE AGRUPACIÓN ---
     const itemsAgrupados = useMemo(() => {
         const grupos: Record<number, GrupoCarrito> = {};
         carrito.forEach((item) => {
@@ -71,30 +71,25 @@ export default function App() {
         return Object.values(grupos);
     }, [carrito]);
 
-    // --- CÁLCULOS DINÁMICOS (Súper robustos) ---
-    // Calculamos el subtotal basándonos en cada item individual del array de carrito
+    // --- CÁLCULOS DINÁMICOS Y DETALLADOS (Punto 10) ---
     const subtotal = useMemo(() => {
         return carrito.reduce((acc, item) => acc + (Number(item.precio) || 0), 0);
     }, [carrito]);
 
     const envio = subtotal >= 1500 || subtotal === 0 ? 0 : 150;
-    const total = subtotal + envio;
+    // Agregamos un costo fijo (o variable) por la "Garantía de vida" de las plantas
+    const garantia = subtotal > 0 ? 49 : 0;
+    const total = subtotal + envio + garantia;
 
     // --- ACCIONES DEL CARRITO ---
     const modificarCantidad = (producto: GrupoCarrito, delta: number) => {
         if (delta > 0) {
-            // AGREGAR: Creamos una nueva instancia única para que el carrito crezca
-            const nuevoItem: CartItem = { 
-                id: producto.id,
-                nombre: producto.nombre,
-                precio: Number(producto.precio),
-                categoria: producto.categoria,
-                imagen: producto.imagen,
-                instanceId: Date.now() + Math.random() 
+            const nuevoItem: CartItem = {
+                ...producto,
+                instanceId: Date.now() + Math.random()
             };
             setCarrito(prev => [...prev, nuevoItem]);
         } else {
-            // QUITAR: Buscamos el último que coincida con el ID y lo removemos
             setCarrito(prev => {
                 const index = prev.findLastIndex(item => item.id === producto.id);
                 if (index > -1) {
@@ -112,60 +107,54 @@ export default function App() {
     };
 
     const vaciarCarrito = () => {
-        if(confirm("¿Deseas vaciar tu carrito?")) {
+        if (confirm("¿Deseas vaciar tu carrito?")) {
             setCarrito([]);
         }
     };
 
-    // --- RENDERIZADO SEGURO ---
+    // --- LÓGICA DE SIMULACIÓN DE PAGO ---
+    const procesarPago = (e: React.FormEvent) => {
+        e.preventDefault(); // Evita recargas
+        setIsProcessing(true);
+
+        // Simulamos tiempo del banco
+        setTimeout(() => {
+            setIsProcessing(false);
+            setPaymentSuccess(true);
+
+            // 1. CREAMOS EL RECIBO DE LA ORDEN
+            const nuevaOrden = {
+                id: 'ORD-' + Math.floor(Math.random() * 1000000), // Genera un ID aleatorio tipo ORD-123456
+                fecha: new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }),
+                total: total,
+                items: carrito, // Guardamos lo que compró
+                estado: 'En preparación' // Estatus inicial simulado
+            };
+
+            // 2. LO GUARDAMOS EN LA MEMORIA DEL NAVEGADOR
+            const ordenesPrevias = JSON.parse(localStorage.getItem('donni-orders') || '[]');
+            localStorage.setItem('donni-orders', JSON.stringify([nuevaOrden, ...ordenesPrevias]));
+
+            // 3. Vaciamos el carrito tras el pago exitoso
+            setCarrito([]);
+        }, 2500);
+    };
+
+    // Prevenir error de hidratación
     if (!isMounted) return null;
 
     return (
-        <div className="min-h-screen bg-[#fafafa] flex flex-col font-sans selection:bg-[#D48960]/30 text-slate-800">
-            
-            {/* HEADER */}
-            <header className="bg-[#1a401f] text-white shadow-xl sticky top-0 z-50">
-                <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-                    <div className="flex items-center space-x-3 cursor-pointer" onClick={() => window.location.href="/"}>
-                        <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-bold">D</div>
-                        <h1 className="text-2xl font-bold tracking-tighter font-serif">DONNI</h1>
-                    </div>
+        <div className="min-h-screen bg-[#fafafa] flex flex-col font-sans text-slate-800">
 
-                    <div className="hidden md:flex flex-1 max-w-xl mx-8">
-                        <div className="w-full relative">
-                            <input 
-                                type="text" 
-                                placeholder="Buscar en el catálogo..." 
-                                className="w-full bg-white/10 border border-white/20 rounded-full py-2 px-10 text-sm focus:bg-white focus:text-[#1a401f] outline-none transition-all placeholder:text-white/40"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            <Search className="absolute left-3 top-2.5 text-white/40" size={16} />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center space-x-5">
-                        <a href="/carrito" className="relative text-[#D48960] p-2">
-                            <ShoppingCart size={22} />
-                            {carrito.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-[#D48960] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-[#1a401f]">
-                                    {carrito.length}
-                                </span>
-                            )}
-                        </a>
-                    </div>
-                </div>
-            </header>
-
-            <main className="container mx-auto px-4 py-12 grow">
+            <div className="container mx-auto px-4 py-12 grow max-w-7xl">
                 <div className="flex flex-col lg:flex-row gap-10">
-                    
-                    {/* LISTA DE PRODUCTOS */}
+
+                    {/* BLOQUE 1: LISTA DE PRODUCTOS */}
                     <div className="grow">
                         <div className="flex items-center justify-between mb-8">
                             <h2 className="text-3xl font-black text-[#1a401f]">Tu Carrito</h2>
                             {carrito.length > 0 && (
-                                <button onClick={vaciarCarrito} className="text-xs font-bold text-red-400 hover:text-red-600 uppercase tracking-widest">
+                                <button onClick={vaciarCarrito} className="text-xs font-bold text-slate-400 hover:text-red-500 uppercase tracking-widest transition-colors">
                                     Vaciar todo
                                 </button>
                             )}
@@ -174,9 +163,9 @@ export default function App() {
                         {itemsAgrupados.length > 0 ? (
                             <div className="space-y-4">
                                 {itemsAgrupados.map((item) => (
-                                    <div key={item.id} className="bg-white rounded-4xl p-6 border border-slate-100 shadow-sm flex items-center gap-6 group">
+                                    <div key={item.id} className="bg-white rounded-[2rem] p-4 md:p-6 border border-slate-100 shadow-sm flex items-center gap-6">
                                         <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl overflow-hidden shrink-0">
-                                            <img src={item.imagen} alt={item.nombre} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                            <img src={item.imagen} alt={item.nombre} className="w-full h-full object-cover" />
                                         </div>
                                         <div className="grow">
                                             <div className="flex justify-between items-start mb-2">
@@ -184,19 +173,18 @@ export default function App() {
                                                     <span className="text-[10px] font-black uppercase text-[#D48960] tracking-widest">{item.categoria}</span>
                                                     <h3 className="font-bold text-xl text-[#1a401f] leading-tight mt-0.5">{item.nombre}</h3>
                                                 </div>
-                                                <button onClick={() => eliminarProductoCompleto(item.id)} className="text-slate-200 hover:text-red-500 p-2">
+                                                <button onClick={() => eliminarProductoCompleto(item.id)} className="text-slate-300 hover:text-red-500 transition-colors p-2">
                                                     <Trash2 size={20} />
                                                 </button>
                                             </div>
                                             <div className="flex items-center justify-between mt-6">
-                                                <div className="flex items-center bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
+                                                <div className="flex items-center bg-slate-50 rounded-2xl p-1 border border-slate-100">
                                                     <button onClick={() => modificarCantidad(item, -1)} className="w-8 h-8 flex items-center justify-center hover:bg-white rounded-xl text-[#1a401f] shadow-sm"><Minus size={14} /></button>
-                                                    <span className="w-12 text-center font-black">{item.cantidad}</span>
+                                                    <span className="w-10 text-center font-black text-sm">{item.cantidad}</span>
                                                     <button onClick={() => modificarCantidad(item, 1)} className="w-8 h-8 flex items-center justify-center hover:bg-white rounded-xl text-[#1a401f] shadow-sm"><Plus size={14} /></button>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="text-xs text-slate-400 font-bold uppercase mb-1">Total Item</p>
-                                                    <p className="font-black text-2xl text-[#1a401f] tracking-tighter" key={item.cantidad}>
+                                                    <p className="font-black text-2xl text-[#1a401f] tracking-tighter">
                                                         ${(item.precio * item.cantidad).toFixed(2)}
                                                     </p>
                                                 </div>
@@ -207,53 +195,135 @@ export default function App() {
                             </div>
                         ) : (
                             <div className="bg-white rounded-[3rem] p-20 text-center border-2 border-dashed border-slate-200">
-                                <h3 className="text-2xl font-bold text-[#1a401f]">Tu carrito está vacío</h3>
-                                <a href="/marketplace" className="mt-8 inline-block bg-[#1a401f] text-white px-10 py-4 rounded-3xl font-bold">Explorar Marketplace</a>
+                                <ShoppingCart size={48} className="mx-auto text-slate-200 mb-4" />
+                                <h3 className="text-2xl font-bold text-[#1a401f] mb-2">Tu carrito está vacío</h3>
+                                <p className="text-slate-400 mb-8">Agrega algunas plantas y comienza tu aventura botánica.</p>
+                                <a href="/" className="inline-block bg-[#1a401f] text-white px-10 py-4 rounded-full font-bold hover:bg-[#115e3b] transition-colors">Explorar Catálogo</a>
                             </div>
                         )}
                     </div>
 
-                    {/* PANEL DE PAGO */}
+                    {/* BLOQUE 2: PANEL DE RESUMEN (Punto 10) */}
                     <div className="w-full lg:w-96 shrink-0">
-                        <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-100 sticky top-28 text-[#1a401f]">
-                            <h3 className="text-xl font-black mb-8 flex items-center">
-                                <ShieldCheck className="mr-2 text-[#D48960]" size={20} /> Resumen de Compra
+                        <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-100 sticky top-28">
+                            <h3 className="text-xl font-black mb-8 flex items-center text-[#1a401f]">
+                                <ShieldCheck className="mr-2 text-[#D48960]" size={24} /> Resumen de Compra
                             </h3>
-                            
-                            <div className="space-y-4 mb-8">
-                                <div className="flex justify-between font-bold text-sm uppercase">
+
+                            <div className="space-y-4 mb-6">
+                                <div className="flex justify-between font-semibold text-sm">
                                     <span className="text-slate-500">Subtotal</span>
-                                    {/* La key={subtotal} obliga al navegador a re-renderizar este texto */}
-                                    <span key={`sub-${subtotal}`}>${subtotal.toFixed(2)}</span>
+                                    <span className="text-[#1a401f]">${subtotal.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between font-bold text-sm uppercase">
-                                    <span className="text-slate-500">Envío</span>
-                                    <span key={`env-${envio}`}>
-                                        {envio === 0 ? <span className="text-emerald-500">¡Gratis!</span> : `$${envio.toFixed(2)}`}
+                                <div className="flex justify-between font-semibold text-sm">
+                                    <span className="text-slate-500 flex items-center">
+                                        Envío seguro <Info size={14} className="ml-1 text-slate-300" title="Gratis en compras mayores a $1500" />
                                     </span>
+                                    <span className={envio === 0 && subtotal > 0 ? "text-[#115e3b] font-bold" : "text-[#1a401f]"}>
+                                        {envio === 0 ? (subtotal > 0 ? '¡Gratis!' : '$0.00') : `$${envio.toFixed(2)}`}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between font-semibold text-sm">
+                                    <span className="text-slate-500 flex items-center">
+                                        Garantía Botánica <Info size={14} className="ml-1 text-slate-300" title="Reemplazo gratuito si la planta llega dañada" />
+                                    </span>
+                                    <span className="text-[#1a401f]">${garantia.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between font-semibold text-xs text-slate-400 pt-2 border-t border-slate-100">
+                                    <span>Impuestos (IVA 16%)</span>
+                                    <span>Incluido</span>
                                 </div>
                             </div>
 
-                            <div className="h-px bg-slate-100 mb-8"></div>
-
-                            <div className="mb-10">
+                            <div className="mb-8">
                                 <span className="text-slate-400 font-bold uppercase text-[10px] block mb-1 tracking-widest">Total a pagar</span>
-                                <span className="text-5xl font-black tracking-tighter tabular-nums" key={`total-${total}`}>
+                                <span className="text-5xl font-black tracking-tighter text-[#1a401f] tabular-nums">
                                     ${total.toFixed(2)}
                                 </span>
                             </div>
 
-                            <button 
-                                onClick={() => alert("Procesando pago...")}
+                            <button
+                                onClick={() => setIsCheckoutOpen(true)}
                                 disabled={carrito.length === 0}
-                                className="w-full bg-[#1a401f] text-white py-6 rounded-4xl font-black text-lg shadow-xl hover:bg-[#265c2c] transition-all flex items-center justify-center gap-3"
+                                className="w-full bg-[#D48960] text-white py-5 rounded-full font-black text-lg shadow-lg shadow-[#D48960]/30 hover:bg-[#c27a51] hover:-translate-y-1 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:hover:translate-y-0"
                             >
                                 <CreditCard size={22} /> Pagar Ahora
                             </button>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
+
+            {/* BLOQUE 3: MODAL DE CHECKOUT (La Pasarela de Pago) */}
+            {isCheckoutOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl">
+
+                        {/* Estado 1: Éxito */}
+                        {paymentSuccess ? (
+                            <div className="p-12 text-center">
+                                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-500">
+                                    <CheckCircle size={40} />
+                                </div>
+                                <h2 className="text-3xl font-black text-[#1a401f] mb-4">¡Pago Exitoso!</h2>
+                                <p className="text-slate-500 mb-8">Tu pedido está siendo procesado. Te enviaremos tu guía de cuidado botánico por correo.</p>
+                                <button
+                                    onClick={() => { setIsCheckoutOpen(false); window.location.href = "/mis-pedidos"; }}
+                                    className="bg-[#1a401f] text-white px-8 py-3 rounded-full font-bold hover:bg-[#115e3b] transition-colors"
+                                >
+                                    Ver estatus de mi pedido
+                                </button>
+                            </div>
+                        ) : (
+                            /* Estado 2: Formulario de Pago */
+                            <div className="p-8">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className="text-2xl font-black text-[#1a401f]">Finalizar Compra</h2>
+                                    <button onClick={() => setIsCheckoutOpen(false)} className="text-slate-400 hover:text-slate-700 p-1">
+                                        <Trash2 size={24} className="rotate-45" /> {/* Usado como icono de cerrar para ahorrar importaciones */}
+                                    </button>
+                                </div>
+
+                                <form onSubmit={procesarPago} className="space-y-4">
+                                    {/* Simulación de Stripe Elements */}
+                                    <div className="space-y-3">
+                                        <p className="text-sm font-bold text-slate-700">Datos de Envío</p>
+                                        <input required type="text" placeholder="Nombre completo" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] focus:ring-1 focus:ring-[#1a401f] outline-none transition-all" />
+                                        <input required type="email" placeholder="Correo electrónico" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] focus:ring-1 focus:ring-[#1a401f] outline-none transition-all" />
+                                        <input required type="text" placeholder="Dirección completa" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] focus:ring-1 focus:ring-[#1a401f] outline-none transition-all" />
+                                    </div>
+
+                                    <div className="space-y-3 pt-4 border-t border-slate-100">
+                                        <p className="text-sm font-bold text-slate-700 flex items-center justify-between">
+                                            Tarjeta de Crédito <ShieldCheck size={16} className="text-emerald-500" />
+                                        </p>
+                                        <input required type="text" placeholder="Número de tarjeta (Ej. 4111 1111 ...)" maxLength={16} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] outline-none font-mono text-sm" />
+                                        <div className="flex gap-4">
+                                            <input required type="text" placeholder="MM/AA" maxLength={5} className="w-1/2 px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] outline-none font-mono text-sm" />
+                                            <input required type="text" placeholder="CVC" maxLength={4} className="w-1/2 px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] outline-none font-mono text-sm" />
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        disabled={isProcessing}
+                                        className="w-full mt-6 bg-[#1a401f] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#115e3b] transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                                    >
+                                        {isProcessing ? (
+                                            <><Loader2 className="animate-spin" size={20} /> Procesando pago...</>
+                                        ) : (
+                                            `Pagar $${total.toFixed(2)}`
+                                        )}
+                                    </button>
+                                    <p className="text-center text-[10px] text-slate-400 mt-3 font-medium uppercase tracking-widest">
+                                        Pagos seguros encriptados a 256-bit
+                                    </p>
+                                </form>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

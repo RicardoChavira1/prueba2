@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// Importamos el Header que creaste en la carpeta components
 import Header from "../components/Header";
+import TopBar from "../components/TopBar";
+import Footer from "../components/Footer";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,15 +28,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {/* Punto 3.6: El Header se coloca aquí para que sea estático y no se recargue */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+
+        {/* 2. Colocas el TopBar justo arriba del Header */}
+        <TopBar />
         <Header />
 
-        <main>
+
+        <main className="flex-grow">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );

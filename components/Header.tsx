@@ -1,70 +1,131 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingCart, Menu, X, User } from 'lucide-react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { ShoppingCart, Menu, X, User, Package, Star } from 'lucide-react'; // Añadido Star
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  return (
-    <header className="bg-white text-[#1a401f] shadow-sm sticky top-0 z-50 w-full border-b border-slate-100">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        
-        {/* 3.5: Formato al LOGO con colores originales y centrado perfecto */}
-        <a href="/" className="flex items-center space-x-3 group cursor-pointer border-2 border-[#1a401f] px-3 py-1 rounded-lg hover:bg-slate-50 transition-all">
-          {/* Contenedor circular con fondo blanco para que el logo resalte */}
-          <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden flex-shrink-0 border border-slate-100 shadow-sm">
-            <img 
-              src="/logo.jpeg" 
-              alt="Donni Logo" 
-              className="w-full h-full object-cover scale-90" 
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }} 
-            />
-            {/* Respaldo en caso de error de carga */}
-            <span className="text-xl hidden">🌿</span>
-          </div>
-          <h1 className="text-2xl font-bold tracking-tighter font-serif text-[#1a401f]">DONNI</h1>
-        </a>
+  // Variable para el color principal basado en el logo de DONNI
+  const brandGreen = "text-[#115e3b]";
+  const brandGreenBg = "bg-[#115e3b]";
 
-        {/* NAVEGACIÓN DESKTOP */}
-        <nav className="hidden lg:flex items-center space-x-8 text-[11px] font-extrabold uppercase tracking-[0.2em]">
-          <a href="/" className="hover:text-[#D48960] transition-colors">Inicio</a>
-          <a href="/nosotros" className="hover:text-[#D48960] transition-colors">Nosotros</a>
-          <a href="/educacion-botanica" className="hover:text-[#D48960] transition-colors">Educación Botánica</a>
-          
-          <div className="relative group cursor-help">
-            <span className="text-slate-300">Comunidad</span>
-            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 hidden group-hover:flex bg-[#D48960] text-white text-[9px] px-2 py-1 rounded whitespace-nowrap shadow-lg items-center justify-center z-[60]">
-              PRÓXIMAMENTE
-              <div className="absolute -top-1 left-1/2 -translate-x-1/2 border-l-4 border-l-transparent border-r-4 border-r-transparent border-b-4 border-b-[#D48960]"></div>
-            </div>
+  return (
+    // BLOQUE 1: Contenedor Principal
+    <header className="bg-white/90 backdrop-blur-md sticky top-0 z-50 w-full border-b border-slate-100 shadow-sm transition-all duration-300">
+      <div className="container mx-auto px-6 py-4 flex justify-between items-center max-w-7xl">
+
+        {/* BLOQUE 2: Logo y Marca */}
+        <Link href="/" className="flex items-center space-x-3 group transition-transform duration-300 hover:scale-105">
+          <div className="relative w-10 h-10 flex items-center justify-center overflow-hidden flex-shrink-0">
+            <Image
+              src="/logo.jpeg"
+              alt="Donni Logo"
+              fill
+              className="object-contain"
+              sizes="40px"
+              priority
+            />
+          </div>
+          <h1 className={`text-2xl font-black tracking-tight font-sans ${brandGreen}`}>
+            DONNI
+          </h1>
+        </Link>
+
+        {/* BLOQUE 3: Navegación Desktop */}
+        <nav className="hidden lg:flex items-center space-x-10 text-sm font-semibold tracking-wide text-slate-600">
+          <Link href="/" className={`hover:${brandGreen} transition-colors duration-200`}>
+            INICIO
+          </Link>
+          <Link href="/educacion-botanica" className={`hover:${brandGreen} transition-colors duration-200`}>
+            EDUCACIÓN BOTÁNICA
+          </Link>
+          <Link href="/nosotros" className={`hover:${brandGreen} transition-colors duration-200`}>
+            NOSOTROS
+          </Link>
+
+          {/* Comunidad - Próximamente */}
+          <div className="flex items-center space-x-2 cursor-not-allowed group">
+            <span className="text-slate-400 group-hover:text-slate-500 transition-colors">COMUNIDAD</span>
+            <span className={`${brandGreenBg} text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm opacity-80`}>
+              Próx
+            </span>
           </div>
         </nav>
 
-        {/* ACCIONES */}
-        <div className="flex items-center space-x-4">
-          <a href="/carrito" className="relative p-2 hover:bg-slate-50 rounded-full transition-all">
-            <ShoppingCart size={22} className="text-[#1a401f]" />
-            <div className="absolute -top-1 -right-1 bg-[#D48960] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
+        {/* BLOQUE 4: Iconos de Acción */}
+        <div className="flex items-center space-x-6">
+
+          {/* Carrito */}
+          <Link href="/carrito" className="relative p-2 text-slate-600 hover:text-[#115e3b] transition-colors duration-200 group">
+            <ShoppingCart size={24} strokeWidth={1.5} />
+            <div className={`absolute -top-1 -right-1 ${brandGreenBg} text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm group-hover:scale-110 transition-transform`}>
               0
             </div>
-          </a>
-          <User size={22} className="text-[#1a401f] cursor-pointer hidden md:block" />
-          <button className="lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </Link>
+
+          {/* Menú de Usuario Desplegable */}
+          <div className="relative group hidden md:block">
+            {/* Ícono base */}
+            <div className="p-2 text-slate-600 hover:text-[#115e3b] cursor-pointer transition-colors duration-200">
+              <User size={24} strokeWidth={1.5} />
+            </div>
+
+            {/* Caja desplegable (Se muestra al hacer hover) */}
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100 flex flex-col overflow-hidden">
+              <Link
+                href="/mis-pedidos"
+                className="px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#115e3b] transition-colors flex items-center"
+              >
+                <Package size={16} className="mr-2" /> Mis Pedidos
+              </Link>
+
+              {/* NUEVO: Opción de Membresías agregada al dropdown */}
+              <Link
+                href="/membresias"
+                className="px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#115e3b] transition-colors flex items-center border-t border-slate-50"
+              >
+                <Star size={16} className="mr-2 text-[#D48960]" /> Membresías
+              </Link>
+
+              <div className="px-4 py-3 text-sm font-semibold text-slate-400 cursor-not-allowed border-t border-slate-50 flex items-center" title="Próximamente">
+                <User size={16} className="mr-2" /> Mi Perfil (Próx)
+              </div>
+            </div>
+          </div>
+
+          {/* Botón Menú Móvil */}
+          <button className="lg:hidden p-2 text-slate-600 hover:text-[#115e3b]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={26} strokeWidth={1.5} /> : <Menu size={26} strokeWidth={1.5} />}
           </button>
         </div>
       </div>
 
-      {/* MENÚ MÓVIL */}
+      {/* BLOQUE 5: Menú Móvil Desplegable */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-slate-100 p-6 space-y-6 font-bold uppercase text-xs tracking-widest">
-          <a href="/" className="block">Inicio</a>
-          <a href="/nosotros" className="block">Nosotros</a>
-          <a href="/educacion-botanica" className="block text-[#D48960]">Educación Botánica</a>
-          <span className="block text-slate-300 italic">Comunidad (Próximamente)</span>
+        <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-100 p-6 space-y-6 shadow-inner animate-in slide-in-from-top-2">
+          <Link href="/" className="block text-sm font-semibold text-slate-700 hover:text-[#115e3b]" onClick={() => setIsMenuOpen(false)}>INICIO</Link>
+          <Link href="/educacion-botanica" className="block text-sm font-semibold text-slate-700 hover:text-[#115e3b]" onClick={() => setIsMenuOpen(false)}>EDUCACIÓN BOTÁNICA</Link>
+
+          {/* Opciones del usuario en móvil */}
+          <div className="pl-4 border-l-2 border-[#D48960] space-y-4 my-2">
+            <Link href="/mis-pedidos" className="block text-sm font-semibold text-[#D48960] hover:text-[#c27a51] flex items-center" onClick={() => setIsMenuOpen(false)}>
+              <Package size={18} className="mr-2" /> MIS PEDIDOS
+            </Link>
+            {/* NUEVO: Opción de Membresías agregada al menú móvil */}
+            <Link href="/membresias" className="block text-sm font-semibold text-[#D48960] hover:text-[#c27a51] flex items-center" onClick={() => setIsMenuOpen(false)}>
+              <Star size={18} className="mr-2" /> MEMBRESÍAS
+            </Link>
+          </div>
+
+          <Link href="/nosotros" className="block text-sm font-semibold text-slate-700 hover:text-[#115e3b]" onClick={() => setIsMenuOpen(false)}>NOSOTROS</Link>
+
+          <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+            <span className="text-sm font-semibold text-slate-400">COMUNIDAD</span>
+            <span className="bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Próximamente</span>
+          </div>
         </div>
       )}
     </header>

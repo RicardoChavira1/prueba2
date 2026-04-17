@@ -1,21 +1,21 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  ShoppingCart, 
-  User, 
-  Search, 
-  Menu, 
-  X, 
-  Droplets, 
-  Bug, 
-  Sun, 
-  CheckCircle, 
-  ArrowRight,
-  ChevronRight,
-  Package, 
-  ShieldCheck,
-  Truck
+import {
+    ShoppingCart,
+    User,
+    Search,
+    Menu,
+    X,
+    Droplets,
+    Bug,
+    Sun,
+    CheckCircle,
+    ArrowRight,
+    ChevronRight,
+    Package,
+    ShieldCheck,
+    Truck
 } from 'lucide-react';
 
 // --- INTERFACES PARA PERSISTENCIA ---
@@ -30,44 +30,44 @@ interface CartItem {
 
 // --- DATOS DE PLANTAS (URLs Estables y Categorizadas) ---
 const PLANTAS_DATA = [
-    { 
-        id: 1, 
-        nombre: "Monstera Deliciosa", 
-        precio: 450, 
-        cuidado: "Riego Moderado", 
-        categoria: "Interior", 
-        imagen: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=800&auto=format&fit=crop" 
+    {
+        id: 1,
+        nombre: "Monstera Deliciosa",
+        precio: 450,
+        cuidado: "Riego Moderado",
+        categoria: "Interior",
+        imagen: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=800&auto=format&fit=crop"
     },
-    { 
-        id: 2, 
-        nombre: "Sansevieria Trifasciata", 
-        precio: 280, 
-        cuidado: "Poca Luz/Agua", 
-        categoria: "Resistente", 
-        imagen: "https://images.unsplash.com/photo-1593433561991-325519804035?q=80&w=800&auto=format&fit=crop" 
+    {
+        id: 2,
+        nombre: "Sansevieria Trifasciata",
+        precio: 280,
+        cuidado: "Poca Luz/Agua",
+        categoria: "Resistente",
+        imagen: "https://images.unsplash.com/photo-1593433561991-325519804035?q=80&w=800&auto=format&fit=crop"
     },
-    { 
-        id: 3, 
-        nombre: "Poto (Epipremnum)", 
-        precio: 190, 
-        cuidado: "Fácil Cuidado", 
-        categoria: "Colgante", 
-        imagen: "https://images.unsplash.com/photo-1597055181300-e3633a207519?q=80&w=800&auto=format&fit=crop" 
+    {
+        id: 3,
+        nombre: "Poto (Epipremnum)",
+        precio: 190,
+        cuidado: "Fácil Cuidado",
+        categoria: "Colgante",
+        imagen: "https://images.unsplash.com/photo-1597055181300-e3633a207519?q=80&w=800&auto=format&fit=crop"
     },
-    { 
-        id: 4, 
-        nombre: "Suculenta Echeveria", 
-        precio: 120, 
-        cuidado: "Luz Directa", 
-        categoria: "Exterior", 
-        imagen: "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?q=80&w=800&auto=format&fit=crop" 
+    {
+        id: 4,
+        nombre: "Suculenta Echeveria",
+        precio: 120,
+        cuidado: "Luz Directa",
+        categoria: "Exterior",
+        imagen: "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?q=80&w=800&auto=format&fit=crop"
     },
 ];
 
 // --- COMPONENTES ATÓMICOS ---
 
-const IconoContenedor = ({ children, className = '', onClick = () => {} }: any) => (
-    <div 
+const IconoContenedor = ({ children, className = '', onClick = () => { } }: any) => (
+    <div
         onClick={onClick}
         className={`p-2 rounded-full cursor-pointer transition-all duration-200 active:scale-95 ${className}`}
     >
@@ -90,7 +90,7 @@ export default function App() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [notificacion, setNotificacion] = useState<string | null>(null);
     const [isMounted, setIsMounted] = useState(false);
-    
+
     // Estado para el filtro del Marketplace en Home
     const [categoriaActiva, setCategoriaActiva] = useState('Todos');
 
@@ -115,20 +115,20 @@ export default function App() {
 
     // Lógica de filtrado para la sección de productos
     const plantasFiltradas = useMemo(() => {
-        const base = categoriaActiva === 'Todos' 
-            ? PLANTAS_DATA 
+        const base = categoriaActiva === 'Todos'
+            ? PLANTAS_DATA
             : PLANTAS_DATA.filter(p => p.categoria === categoriaActiva);
-            
-        return base.filter(p => 
+
+        return base.filter(p =>
             p.nombre.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }, [categoriaActiva, searchQuery]);
 
     // Lógica de Carrito
     const agregarAlCarrito = (planta: any) => {
-        const nuevoItem: CartItem = { 
-            ...planta, 
-            instanceId: Date.now() + Math.random() 
+        const nuevoItem: CartItem = {
+            ...planta,
+            instanceId: Date.now() + Math.random()
         };
         setCarrito(prev => [...prev, nuevoItem]);
         mostrarNotificacion(`¡${planta.nombre} añadido al carrito!`);
@@ -144,7 +144,7 @@ export default function App() {
 
     return (
         <div className="min-h-screen font-sans text-slate-800 bg-white selection:bg-[#D48960]/30">
-            
+
             {/* Notificación Flotante */}
             {notificacion && (
                 <div className="fixed bottom-8 right-8 z-[100] bg-[#1a401f] text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-bounce">
@@ -152,7 +152,7 @@ export default function App() {
                     <span className="font-medium">{notificacion}</span>
                 </div>
             )}
-            
+
             {/* HEADER 
             <header className="bg-[#1a401f] text-white shadow-xl sticky top-0 z-50">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -219,12 +219,12 @@ export default function App() {
             </header>*/}
 
             <main className="container mx-auto px-4 py-8 md:py-16">
-                
+
                 {/* HERO SECTION */}
                 <section className="relative overflow-hidden bg-slate-50 rounded-[2.5rem] p-8 md:p-20 mb-20 border border-slate-100 flex flex-col items-center text-center">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-[#1a401f]/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#D48960]/5 rounded-full -ml-20 -mb-20 blur-3xl"></div>
-                    
+
                     <span className="bg-[#1a401f]/10 text-[#1a401f] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6">
                         Impulsando tu Éxito Botánico
                     </span>
@@ -254,14 +254,13 @@ export default function App() {
                         {/* BOTONES DE FILTRO FUNCIONALES */}
                         <div className="w-full md:w-auto flex items-center space-x-2 overflow-x-auto pb-2">
                             {['Todos', 'Interior', 'Resistente', 'Exterior', 'Colgante'].map(cat => (
-                                <button 
-                                    key={cat} 
+                                <button
+                                    key={cat}
                                     onClick={() => setCategoriaActiva(cat)}
-                                    className={`px-4 py-2 rounded-full border text-sm font-semibold transition-all whitespace-nowrap ${
-                                        categoriaActiva === cat 
-                                        ? 'bg-[#1a401f] text-white border-[#1a401f]' 
+                                    className={`px-4 py-2 rounded-full border text-sm font-semibold transition-all whitespace-nowrap ${categoriaActiva === cat
+                                        ? 'bg-[#1a401f] text-white border-[#1a401f]'
                                         : 'bg-white text-slate-400 border-slate-200 hover:border-[#1a401f] hover:text-[#1a401f]'
-                                    }`}
+                                        }`}
                                 >
                                     {cat}
                                 </button>
@@ -274,10 +273,10 @@ export default function App() {
                             {plantasFiltradas.map(planta => (
                                 <div key={planta.id} className="group bg-white rounded-3xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 flex flex-col">
                                     <div className="relative h-64 overflow-hidden">
-                                        <img 
-                                            src={planta.imagen} 
-                                            alt={planta.nombre} 
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                        <img
+                                            src={planta.imagen}
+                                            alt={planta.nombre}
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                             onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1545239351-ef35f43d514b?q=80&w=800&auto=format&fit=crop"; }}
                                         />
                                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-[#1a401f]">
@@ -293,7 +292,7 @@ export default function App() {
                                         </div>
                                         <div className="mt-6 flex items-center justify-between">
                                             <span className="text-2xl font-black text-[#1a401f] tracking-tighter">${planta.precio}</span>
-                                            <button 
+                                            <button
                                                 onClick={() => agregarAlCarrito(planta)}
                                                 className="bg-[#D48960]/10 text-[#D48960] p-3 rounded-2xl hover:bg-[#D48960] hover:text-white transition-all active:scale-90"
                                             >
@@ -308,7 +307,7 @@ export default function App() {
                         <div className="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
                             <Search size={48} className="mx-auto text-slate-300 mb-4" />
                             <p className="text-lg font-bold text-slate-400">No hay plantas en esta categoría</p>
-                            <button onClick={() => {setCategoriaActiva('Todos'); setSearchQuery('');}} className="mt-4 text-[#D48960] font-bold underline">Limpiar filtros</button>
+                            <button onClick={() => { setCategoriaActiva('Todos'); setSearchQuery(''); }} className="mt-4 text-[#D48960] font-bold underline">Limpiar filtros</button>
                         </div>
                     )}
                 </section>
@@ -367,36 +366,6 @@ export default function App() {
                 </section>
 
             </main>
-
-            {/* FOOTER */}
-            <footer className="bg-[#1a401f] text-white/60 py-16">
-                <div className="container mx-auto px-4 text-center">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 text-left">
-                        <div className="col-span-1 md:col-span-2">
-                            <h4 className="text-3xl font-black font-serif text-white mb-6">DONNI</h4>
-                            <p className="max-w-md text-sm leading-relaxed mb-8">
-                                Transformando el sector botánico a través de la educación y tecnología. En DONNI, cada planta es un compromiso de éxito compartido.
-                            </p>
-                        </div>
-                        <div>
-                            <h5 className="text-white font-bold mb-6">Explorar</h5>
-                            <ul className="space-y-4 text-sm font-medium">
-                                <li><a href="/marketplace" className="hover:text-white transition-colors">Marketplace</a></li>
-                                <li><a href="/academia" className="hover:text-white transition-colors">Academia</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Contacto</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest font-bold">
-                        <p>© {new Date().getFullYear()} SEER | DONNI. All Rights Reserved.</p>
-                        <p className="mt-4 md:mt-0">Diseñado por el equipo de Donni</p>
-                    </div>
-                    <div className="flex gap-4 mt-2">
-                    <p className="cursor-pointer hover:underline">Aviso de Privacidad</p>
-                    <p className="cursor-pointer hover:underline">Condiciones de Uso</p>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 }

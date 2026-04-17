@@ -1,0 +1,110 @@
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+
+export default function Footer() {
+    return (
+        // Usamos el verde institucional de DONNI
+        <footer className="bg-[#115e3b] text-white/80 py-8 border-t-[6px] border-[#D48960]">
+            <div className="container mx-auto px-6 max-w-7xl">
+
+                {/* BLOQUE SUPERIOR: Columnas */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+
+                    {/* Columna 1: Logo, Eslogan y Descripción */}
+                    <div className="col-span-1 md:col-span-2">
+                        <Link href="/" className="flex items-center space-x-3 mb-6 group inline-flex">
+                            <div className="relative w-12 h-12 bg-white rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0 shadow-lg">
+                                <Image
+                                    src="/logo.jpeg"
+                                    alt="Donni Logo"
+                                    fill
+                                    className="object-contain p-1"
+                                    sizes="48px"
+                                />
+                            </div>
+                            <div>
+                                <h4 className="text-3xl font-black font-sans text-white tracking-tight">DONNI</h4>
+                                {/* Eslogan añadido */}
+                                <p className="text-[#D48960] text-xs font-bold uppercase tracking-widest">Las plantas son clave para la vida.</p>
+                            </div>
+                        </Link>
+                        <p className="max-w-md text-sm leading-relaxed text-white/70">
+                            Transformando el sector botánico a través de la educación y tecnología. En DONNI, no solo adquieres una planta, aseguras su éxito y crecimiento continuo.
+                        </p>
+                    </div>
+
+                    {/* Columna 2: Navegación */}
+                    <div>
+                        <h5 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Explorar</h5>
+                        <ul className="space-y-4 text-sm font-medium">
+                            <li><Link href="/" className="hover:text-white transition-colors flex items-center group"><span className="w-2 h-0.5 bg-[#D48960] mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>Inicio</Link></li>
+                            <li><Link href="/educacion-botanica" className="hover:text-white transition-colors flex items-center group"><span className="w-2 h-0.5 bg-[#D48960] mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>Educación Botánica</Link></li>
+                            <li><Link href="/nosotros" className="hover:text-white transition-colors flex items-center group"><span className="w-2 h-0.5 bg-[#D48960] mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>Nosotros</Link></li>
+                        </ul>
+                    </div>
+
+                    {/* Columna 3: Redes Sociales */}
+                    <div>
+                        <h5 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Comunidad</h5>
+                        <div className="flex space-x-4 items-center">
+
+                            {/* Instagram (Activo y Funcional) */}
+                            <a
+                                href="https://www.instagram.com/donni_mexico/"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#D48960] hover:text-white transition-all duration-300"
+                                aria-label="Síguenos en Instagram"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                                </svg>
+                            </a>
+
+                            {/* Facebook (Próximamente) */}
+                            <div
+                                title="Próximamente"
+                                className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/30 cursor-not-allowed transition-all duration-300"
+                                aria-label="Facebook próximamente"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                                </svg>
+                            </div>
+
+                            {/* Twitter / X (Próximamente) */}
+                            <div
+                                title="Próximamente"
+                                className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/30 cursor-not-allowed transition-all duration-300"
+                                aria-label="Twitter próximamente"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                                </svg>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                {/* BLOQUE INFERIOR: Copyright y Legales*/}
+                <div className="pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center text-xs text-white/50 font-medium">
+                    <p className="mb-4 md:mb-0">© {new Date().getFullYear()} DONNI. Todos los derechos reservados.</p>
+
+                    {/* Smart-text de legales */}
+                    <div className="flex items-center space-x-6">
+                        <Link href="/privacidad" className="hover:text-white hover:underline underline-offset-4 transition-colors">
+                            Aviso de Privacidad
+                        </Link>
+                        <Link href="/terminos" className="hover:text-white hover:underline underline-offset-4 transition-colors">
+                            Condiciones de Uso
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+}
