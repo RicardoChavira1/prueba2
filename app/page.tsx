@@ -152,12 +152,12 @@ export default function App() {
                     <span className="font-medium">{notificacion}</span>
                 </div>
             )}
-
-            {/* HEADER */}
+            
+            {/* HEADER 
             <header className="bg-[#1a401f] text-white shadow-xl sticky top-0 z-50">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                     
-                    {/* Logo */}
+                    {/* Logo 
                     <a href="/" className="flex items-center space-x-3 group cursor-pointer">
                         <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden">
                             <img src="/logo.jpeg" alt="D" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
@@ -166,7 +166,7 @@ export default function App() {
                         <h1 className="text-2xl md:text-3xl font-bold tracking-tighter font-serif">DONNI</h1>
                     </a>
 
-                    {/* Navegación Desktop */}
+                    {/* Navegación Desktop 
                     <nav className="hidden lg:flex space-x-10 text-sm font-semibold uppercase tracking-widest">
                         <a href="/marketplace" className="hover:text-[#D48960] transition-colors">Marketplace</a>
                         <a href="/academia" className="hover:text-[#D48960] transition-colors">Academia</a>
@@ -174,7 +174,7 @@ export default function App() {
                         <a href="#comunidad" className="hover:text-[#D48960] transition-colors">Comunidad</a>
                     </nav>
 
-                    {/* Acciones */}
+                    {/* Acciones 
                     <div className="flex items-center space-x-2 md:space-x-4">
                         <div className="hidden md:flex items-center bg-white/10 rounded-full px-4 py-2 border border-white/10 focus-within:bg-white/20 transition-all">
                             <Search size={18} className="text-white/60 mr-2" />
@@ -204,7 +204,7 @@ export default function App() {
                     </div>
                 </div>
 
-                {/* Mobile Menu */}
+                {/* Mobile Menu 
                 {isMenuOpen && (
                     <div className="lg:hidden bg-[#1a401f] border-t border-white/10 p-6 space-y-4">
                         <nav className="flex flex-col space-y-4 font-bold text-lg">
@@ -216,7 +216,7 @@ export default function App() {
                         </nav>
                     </div>
                 )}
-            </header>
+            </header>*/}
 
             <main className="container mx-auto px-4 py-8 md:py-16">
                 
@@ -390,6 +390,10 @@ export default function App() {
                     <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest font-bold">
                         <p>© {new Date().getFullYear()} SEER | DONNI. All Rights Reserved.</p>
                         <p className="mt-4 md:mt-0">Diseñado por el equipo de Donni</p>
+                    </div>
+                    <div className="flex gap-4 mt-2">
+                    <p className="cursor-pointer hover:underline">Aviso de Privacidad</p>
+                    <p className="cursor-pointer hover:underline">Condiciones de Uso</p>
                     </div>
                 </div>
             </footer>

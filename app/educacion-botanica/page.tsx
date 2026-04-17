@@ -97,7 +97,6 @@ const CURSOS = [
     },
 ];
 
-// --- DATOS WIKI / CURIOSIDADES ---
 const WIKI_FACTS = [
     {
         id: 1,
@@ -154,8 +153,8 @@ export default function Academia() {
     return (
         <div className="min-h-screen bg-[#fafaf9] flex flex-col font-sans selection:bg-[#D48960]/30 text-slate-800">
             
-            {/* HEADER */}
-            <header className="bg-[#1a401f] text-white shadow-xl sticky top-0 z-50">
+            {/* COMENTADO: HEADER DUPLICADO PARA EVITAR ERRORES DE PARSING */}
+            {/* <header className="bg-[#1a401f] text-white shadow-xl sticky top-0 z-50">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                     <a href="/" className="flex items-center space-x-3 group">
                         <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
@@ -163,13 +162,11 @@ export default function Academia() {
                         </div>
                         <h1 className="text-2xl font-bold tracking-tighter font-serif">DONNI</h1>
                     </a>
-
                     <nav className="hidden lg:flex space-x-10 text-sm font-semibold uppercase tracking-widest">
                         <a href="/marketplace" className="hover:text-[#D48960] transition-colors">Marketplace</a>
                         <a href="/academia" className="text-[#D48960]">Academia</a>
                         <a href="/#comunidad" className="hover:text-[#D48960] transition-colors">Comunidad</a>
                     </nav>
-
                     <div className="flex items-center space-x-4">
                         <a href="/carrito" className="relative p-2 rounded-full hover:bg-white/10 transition-all">
                             <ShoppingCart size={22} />
@@ -184,7 +181,8 @@ export default function Academia() {
                         </button>
                     </div>
                 </div>
-            </header>
+            </header> 
+            */}
 
             <main className="flex-grow">
                 {/* HERO */}
@@ -304,7 +302,7 @@ export default function Academia() {
                     </div>
                 </section>
 
-                {/* --- NUEVA SECCIÓN: WIKI DE CURIOSIDADES BOTÁNICAS --- */}
+                {/* WIKI DE CURIOSIDADES */}
                 <section className="bg-white py-24 border-t border-slate-100">
                     <div className="container mx-auto px-4">
                         <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
@@ -341,7 +339,6 @@ export default function Academia() {
                             ))}
                         </div>
 
-                        {/* BANNER DINÁMICO DE CONOCIMIENTO */}
                         <div className="mt-20 bg-[#1a401f] rounded-[3rem] p-8 md:p-16 relative overflow-hidden text-white shadow-2xl">
                             <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12">
                                 <BookOpen size={200} />
