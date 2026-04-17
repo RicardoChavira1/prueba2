@@ -216,16 +216,18 @@ export default function CarritoPage() {
                                     <span className="text-[#1a401f]">${subtotal.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between font-semibold text-sm">
-                                    <span className="text-slate-500 flex items-center">
-                                        Envío seguro <Info size={14} className="ml-1 text-slate-300" title="Gratis en compras mayores a $1500" />
+                                    {/* CORRECCIÓN 1: Movemos el title al span padre */}
+                                    <span className="text-slate-500 flex items-center cursor-help" title="Gratis en compras mayores a $1500">
+                                        Envío seguro <Info size={14} className="ml-1 text-slate-300" />
                                     </span>
                                     <span className={envio === 0 && subtotal > 0 ? "text-[#115e3b] font-bold" : "text-[#1a401f]"}>
                                         {envio === 0 ? (subtotal > 0 ? '¡Gratis!' : '$0.00') : `$${envio.toFixed(2)}`}
                                     </span>
                                 </div>
                                 <div className="flex justify-between font-semibold text-sm">
-                                    <span className="text-slate-500 flex items-center">
-                                        Garantía Botánica <Info size={14} className="ml-1 text-slate-300" title="Reemplazo gratuito si la planta llega dañada" />
+                                    {/* CORRECCIÓN 2: Movemos el title al span padre */}
+                                    <span className="text-slate-500 flex items-center cursor-help" title="Reemplazo gratuito si la planta llega dañada">
+                                        Garantía Botánica <Info size={14} className="ml-1 text-slate-300" />
                                     </span>
                                     <span className="text-[#1a401f]">${garantia.toFixed(2)}</span>
                                 </div>

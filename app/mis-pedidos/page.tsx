@@ -101,7 +101,7 @@ export default function MisPedidosPage() {
                         <ShoppingBag size={48} className="mx-auto text-slate-200 mb-4" />
                         <h3 className="text-2xl font-bold text-[#1a401f] mb-2">Aún no tienes pedidos</h3>
                         <p className="text-slate-400 mb-8">Tu historial botánico está esperando su primera planta.</p>
-                        <Link href="/" className="inline-block bg-[#1a401f] text-white px-8 py-3 rounded-full font-bold hover:bg-[#115e3b] transition-colors">
+                        <Link href="/marketplace" className="inline-block bg-[#1a401f] text-white px-8 py-3 rounded-full font-bold hover:bg-[#115e3b] transition-colors">
                             Explorar Catálogo
                         </Link>
                     </div>
