@@ -1,23 +1,52 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingCart, Menu, X, User, Package, Star } from 'lucide-react'; // Añadido Star
+import { ShoppingCart, Menu, X, User, Package, Star, LogOut, LogIn } from 'lucide-react';
+import { auth } from '@/app/lib/firebase';
+import { onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [mounted, setMounted] = useState(false); // Estado para evitar errores de hidratación
 
-  // Variable para el color principal basado en el logo de DONNI
   const brandGreen = "text-[#115e3b]";
   const brandGreenBg = "bg-[#115e3b]";
 
+  useEffect(() => {
+    setMounted(true); // El componente ya está en el cliente
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    window.location.href = "/";
+  };
+
+  // Si no ha montado, renderizamos una versión simplificada para evitar el error de hidratación
+  if (!mounted) {
+    return (
+      <header className="bg-white/90 backdrop-blur-md sticky top-0 z-50 w-full border-b border-slate-100 shadow-sm">
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center max-w-7xl">
+          <div className="flex items-center space-x-3">
+             <div className="w-10 h-10 bg-slate-100 rounded-full animate-pulse"></div>
+             <h1 className={`text-2xl font-black tracking-tight ${brandGreen}`}>DONNI</h1>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
-    // BLOQUE 1: Contenedor Principal
     <header className="bg-white/90 backdrop-blur-md sticky top-0 z-50 w-full border-b border-slate-100 shadow-sm transition-all duration-300">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center max-w-7xl">
 
-        {/* BLOQUE 2: Logo y Marca */}
+        {/* Logo y Marca */}
         <Link href="/" className="flex items-center space-x-3 group transition-transform duration-300 hover:scale-105">
           <div className="relative w-10 h-10 flex items-center justify-center overflow-hidden flex-shrink-0">
             <Image
@@ -34,28 +63,14 @@ export default function Header() {
           </h1>
         </Link>
 
-        {/* BLOQUE 3: Navegación Desktop */}
+        {/* Navegación Desktop */}
         <nav className="hidden lg:flex items-center space-x-10 text-sm font-semibold tracking-wide text-slate-600">
-          <Link href="/" className={`hover:${brandGreen} transition-colors duration-200`}>
-            INICIO
-          </Link>
-          <Link href="/educacion-botanica" className={`hover:${brandGreen} transition-colors duration-200`}>
-            EDUCACIÓN BOTÁNICA
-          </Link>
-          <Link href="/nosotros" className={`hover:${brandGreen} transition-colors duration-200`}>
-            NOSOTROS
-          </Link>
-
-          {/* Comunidad - Próximamente */}
-          <div className="flex items-center space-x-2 cursor-not-allowed group">
-            <span className="text-slate-400 group-hover:text-slate-500 transition-colors">COMUNIDAD</span>
-            <span className={`${brandGreenBg} text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm opacity-80`}>
-              Próx
-            </span>
-          </div>
+          <Link href="/" className={`hover:${brandGreen} transition-colors duration-200`}>INICIO</Link>
+          <Link href="/educacion-botanica" className={`hover:${brandGreen} transition-colors duration-200`}>EDUCACIÓN BOTÁNICA</Link>
+          <Link href="/nosotros" className={`hover:${brandGreen} transition-colors duration-200`}>NOSOTROS</Link>
         </nav>
 
-        {/* BLOQUE 4: Iconos de Acción */}
+        {/* Iconos de Acción */}
         <div className="flex items-center space-x-6">
 
           {/* Carrito */}
@@ -66,33 +81,61 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Menú de Usuario Desplegable */}
+          {/* MENÚ DE USUARIO DINÁMICO */}
           <div className="relative group hidden md:block">
-            {/* Ícono base */}
-            <div className="p-2 text-slate-600 hover:text-[#115e3b] cursor-pointer transition-colors duration-200">
-              <User size={24} strokeWidth={1.5} />
+            <div className="p-1 cursor-pointer transition-all duration-200">
+              {user ? (
+                /* USAMOS <img> ESTÁNDAR en lugar de <Image> de Next.js 
+                   para evitar el error de configuración de dominios (lh3.googleusercontent.com)
+                */
+                <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#115e3b] hover:ring-4 ring-green-100 transition-all">
+                  <img 
+                    src={user.photoURL || "/logo.jpeg"} 
+                    alt="Perfil" 
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+              ) : (
+                <div className="p-1 text-slate-600 hover:text-[#115e3b]">
+                  <User size={24} strokeWidth={1.5} />
+                </div>
+              )}
             </div>
 
-            {/* Caja desplegable (Se muestra al hacer hover) */}
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100 flex flex-col overflow-hidden">
-              <Link
-                href="/mis-pedidos"
-                className="px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#115e3b] transition-colors flex items-center"
-              >
+            {/* Caja desplegable */}
+            <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100 flex flex-col overflow-hidden">
+              
+              {user && (
+                <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 text-center">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bienvenido</p>
+                  <p className="text-sm font-black text-[#115e3b] truncate">{user.displayName?.split(' ')[0]}</p>
+                </div>
+              )}
+
+              <Link href="/mis-pedidos" className="px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#115e3b] transition-colors flex items-center">
                 <Package size={16} className="mr-2" /> Mis Pedidos
               </Link>
 
-              {/* NUEVO: Opción de Membresías agregada al dropdown */}
-              <Link
-                href="/membresias"
-                className="px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#115e3b] transition-colors flex items-center border-t border-slate-50"
-              >
+              <Link href="/membresias" className="px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#115e3b] transition-colors flex items-center border-t border-slate-50">
                 <Star size={16} className="mr-2 text-[#D48960]" /> Membresías
               </Link>
 
-              <div className="px-4 py-3 text-sm font-semibold text-slate-400 cursor-not-allowed border-t border-slate-50 flex items-center" title="Próximamente">
-                <User size={16} className="mr-2" /> Mi Perfil (Próx)
-              </div>
+              {user ? (
+                <button 
+                  onClick={handleLogout}
+                  className="px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 transition-colors flex items-center border-t border-slate-50"
+                >
+                  <LogOut size={16} className="mr-2" /> Cerrar Sesión
+                </button>
+              ) : (
+                <Link 
+                  href="/login" 
+                  className={`px-4 py-3 text-sm font-bold text-white ${brandGreenBg} hover:opacity-90 transition-colors flex items-center justify-center`}
+                >
+                  <LogIn size={16} className="mr-2" /> Iniciar Sesión
+                </Link>
+              )}
             </div>
           </div>
 
@@ -103,29 +146,30 @@ export default function Header() {
         </div>
       </div>
 
-      {/* BLOQUE 5: Menú Móvil Desplegable */}
+      {/* Menú Móvil Desplegable */}
       {isMenuOpen && (
         <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-100 p-6 space-y-6 shadow-inner animate-in slide-in-from-top-2">
-          <Link href="/" className="block text-sm font-semibold text-slate-700 hover:text-[#115e3b]" onClick={() => setIsMenuOpen(false)}>INICIO</Link>
-          <Link href="/educacion-botanica" className="block text-sm font-semibold text-slate-700 hover:text-[#115e3b]" onClick={() => setIsMenuOpen(false)}>EDUCACIÓN BOTÁNICA</Link>
-
-          {/* Opciones del usuario en móvil */}
-          <div className="pl-4 border-l-2 border-[#D48960] space-y-4 my-2">
-            <Link href="/mis-pedidos" className="block text-sm font-semibold text-[#D48960] hover:text-[#c27a51] flex items-center" onClick={() => setIsMenuOpen(false)}>
-              <Package size={18} className="mr-2" /> MIS PEDIDOS
-            </Link>
-            {/* NUEVO: Opción de Membresías agregada al menú móvil */}
-            <Link href="/membresias" className="block text-sm font-semibold text-[#D48960] hover:text-[#c27a51] flex items-center" onClick={() => setIsMenuOpen(false)}>
-              <Star size={18} className="mr-2" /> MEMBRESÍAS
-            </Link>
-          </div>
-
-          <Link href="/nosotros" className="block text-sm font-semibold text-slate-700 hover:text-[#115e3b]" onClick={() => setIsMenuOpen(false)}>NOSOTROS</Link>
-
-          <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-            <span className="text-sm font-semibold text-slate-400">COMUNIDAD</span>
-            <span className="bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Próximamente</span>
-          </div>
+          {user && (
+            <div className="flex items-center space-x-3 pb-4 border-b border-slate-100">
+               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#115e3b]">
+                  <img src={user.photoURL || "/logo.jpeg"} alt="Perfil" className="w-full h-full object-cover" />
+               </div>
+               <div>
+                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">HOLA,</p>
+                 <p className="text-lg font-black text-[#115e3b] leading-tight">{user.displayName}</p>
+               </div>
+            </div>
+          )}
+          
+          <Link href="/" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>INICIO</Link>
+          <Link href="/educacion-botanica" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>EDUCACIÓN BOTÁNICA</Link>
+          <Link href="/mis-pedidos" className="block text-sm font-semibold text-[#D48960]" onClick={() => setIsMenuOpen(false)}>MIS PEDIDOS</Link>
+          
+          {user ? (
+            <button onClick={handleLogout} className="w-full py-3 bg-red-50 text-red-500 font-bold rounded-xl text-sm">CERRAR SESIÓN</button>
+          ) : (
+            <Link href="/login" className={`block w-full py-3 ${brandGreenBg} text-white text-center font-bold rounded-xl text-sm`} onClick={() => setIsMenuOpen(false)}>INICIAR SESIÓN</Link>
+          )}
         </div>
       )}
     </header>
