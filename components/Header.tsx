@@ -88,6 +88,7 @@ export default function Header() {
         {/* Navegación Desktop */}
         <nav className="hidden lg:flex items-center space-x-10 text-sm font-semibold tracking-wide text-slate-600">
           <Link href="/" className={`hover:${brandGreen} transition-colors duration-200`}>INICIO</Link>
+          <Link href="/marketplace" className={`hover:${brandGreen} transition-colors duration-200`}>MARKETPLACE</Link>
           <Link href="/educacion-botanica" className={`hover:${brandGreen} transition-colors duration-200`}>EDUCACIÓN BOTÁNICA</Link>
           <Link href="/nosotros" className={`hover:${brandGreen} transition-colors duration-200`}>NOSOTROS</Link>
         </nav>

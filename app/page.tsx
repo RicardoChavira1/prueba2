@@ -15,7 +15,8 @@ import {
     ChevronRight,
     Package,
     ShieldCheck,
-    Truck
+    Truck,
+    Flower
 } from 'lucide-react';
 
 // --- INTERFACES PARA PERSISTENCIA ---
@@ -238,13 +239,13 @@ export default function App() {
                         <a href="/marketplace" className="bg-[#1a401f] text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center hover:bg-[#265c2c] transition-all shadow-lg shadow-[#1a401f]/20">
                             Explorar Catálogo <ArrowRight size={18} className="ml-2" />
                         </a>
-                        <a href="/academia" className="bg-white text-[#1a401f] border-2 border-[#1a401f]/10 px-8 py-4 rounded-2xl font-bold hover:bg-slate-100 transition-all text-center">
+                        {/*                         <a href="/academia" className="bg-white text-[#1a401f] border-2 border-[#1a401f]/10 px-8 py-4 rounded-2xl font-bold hover:bg-slate-100 transition-all text-center">
                             Ver Academia
-                        </a>
+                        </a> */}
                     </div>
                 </section>
 
-                {/* MARKETPLACE SECTION (Con Filtros Corregidos) */}
+                {/* MARKETPLACE SECTION */}
                 <section id="marketplace" className="mb-24">
                     <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
                         <div>
@@ -353,7 +354,7 @@ export default function App() {
                         {[
                             { t: "Inspección Fitosanitaria", d: "Doble chequeo antes de salir.", icon: <ShieldCheck /> },
                             { t: "Empaque Sostenible", d: "Materiales 100% compostables.", icon: <Package /> },
-                            { t: "Monitoreo Activo", d: "Tracking en tiempo real.", icon: <Truck /> },
+                            { t: "Educación bótanica", d: "Aprende todo sobre tu planta.", icon: <Flower /> },
                             { t: "Garantía de Vida", d: "Reemplazo si llega dañada.", icon: <CheckCircle /> }
                         ].map((item, idx) => (
                             <div key={idx} className="flex flex-col items-center text-center p-6 bg-slate-50 rounded-2xl hover:bg-[#1a401f]/5 transition-colors">
