@@ -146,29 +146,38 @@ export default function CarritoPage() {
     // --- LÓGICA DE SIMULACIÓN DE PAGO ---
     const procesarPago = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Medida de seguridad extra: Si alguien logró burlar la UI y no hay usuario, bloqueamos la compra.
+        if (!user) {
+            alert("Error: Sesión no válida.");
+            return;
+        }
+
         setIsProcessing(true);
 
         setTimeout(() => {
             setIsProcessing(false);
             setPaymentSuccess(true);
 
-            // Guardamos la orden, idealmente aquí podrías incluir el user.uid si tuvieras base de datos
             const nuevaOrden = {
                 id: 'ORD-' + Math.floor(Math.random() * 1000000),
                 fecha: new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }),
                 total: total,
                 items: carrito,
                 estado: 'En preparación',
-                comprador: user?.email || 'Desconocido' // Agregamos el correo del comprador como extra
+                comprador: user.email
             };
 
-            const ordenesPrevias = JSON.parse(localStorage.getItem('donni-orders') || '[]');
-            localStorage.setItem('donni-orders', JSON.stringify([nuevaOrden, ...ordenesPrevias]));
+            // NUEVO: Creamos una llave única (Namespace) usando el UID de Firebase del usuario
+            const storageKey = `donni-orders-${user.uid}`;
+
+            // Leemos y guardamos usando esa llave única
+            const ordenesPrevias = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            localStorage.setItem(storageKey, JSON.stringify([nuevaOrden, ...ordenesPrevias]));
 
             setCarrito([]);
         }, 2500);
     };
-
     if (!isMounted) return null;
 
     return (

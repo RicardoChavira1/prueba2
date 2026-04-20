@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Package, Clock, CheckCircle, ArrowRight, ShoppingBag } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Package, Clock, ShoppingBag, ArrowRight, Loader2 } from 'lucide-react';
+// IMPORTANTE: Traemos nuestra burbuja de autenticación
+import { useAuth } from '../context/AuthContext';
 
 // --- INTERFACES ---
 interface OrderItem {
@@ -21,24 +24,52 @@ interface Order {
 }
 
 export default function MisPedidosPage() {
+    // Consumimos el contexto global y el enrutador
+    const { user, loading } = useAuth();
+    const router = useRouter();
+
     const [orders, setOrders] = useState<Order[]>([]);
     const [isMounted, setIsMounted] = useState(false);
 
-    // --- CARGA DE DATOS ---
     useEffect(() => {
         setIsMounted(true);
-        // Leemos las órdenes que guardó el carrito
-        const savedOrders = localStorage.getItem('donni-orders');
-        if (savedOrders) {
-            try {
-                setOrders(JSON.parse(savedOrders));
-            } catch (e) {
-                console.error("Error al cargar los pedidos");
-            }
-        }
     }, []);
 
-    if (!isMounted) return null;
+    // --- CARGA DE DATOS Y PROTECCIÓN DE RUTA ---
+    useEffect(() => {
+        // Si aún está cargando Firebase o Next.js no ha montado el componente, esperamos.
+        if (!isMounted || loading) return;
+
+        if (user) {
+            // 1. Si hay usuario, buscamos SUS pedidos específicos usando su UID
+            const storageKey = `donni-orders-${user.uid}`;
+            const savedOrders = localStorage.getItem(storageKey);
+
+            if (savedOrders) {
+                try {
+                    setOrders(JSON.parse(savedOrders));
+                } catch (e) {
+                    console.error("Error al cargar los pedidos");
+                }
+            }
+        } else {
+            // 2. Si terminó de cargar y NO hay usuario, es un intruso. Lo mandamos al login.
+            router.push('/login');
+        }
+    }, [user, loading, isMounted, router]);
+
+    // Pantalla de carga mientras Firebase confirma quién es el usuario
+    if (!isMounted || loading) {
+        return (
+            <div className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center">
+                <Loader2 className="animate-spin text-[#1a401f] mb-4" size={40} />
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Verificando credenciales...</p>
+            </div>
+        );
+    }
+
+    // Evita destellos en la pantalla si el usuario no existe (justo antes de ser redirigido)
+    if (!user) return null;
 
     return (
         <div className="min-h-screen bg-[#fafafa] flex flex-col font-sans text-slate-800">
@@ -46,14 +77,15 @@ export default function MisPedidosPage() {
 
                 <div className="mb-10">
                     <h2 className="text-3xl font-black text-[#1a401f] mb-2">Mis Pedidos</h2>
-                    <p className="text-slate-500">Rastrea tus compras y su viaje hacia tu hogar.</p>
+                    <p className="text-slate-500">
+                        Historial botánico de <strong className="text-[#D48960]">{user.displayName || user.email}</strong>.
+                    </p>
                 </div>
 
                 {orders.length > 0 ? (
                     <div className="space-y-6">
                         {orders.map((order, index) => (
                             <div key={index} className="bg-white rounded-[2rem] p-6 md:p-8 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-
                                 {/* CABECERA DE LA ORDEN */}
                                 <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-6 mb-6 gap-4">
                                     <div>
@@ -86,21 +118,21 @@ export default function MisPedidosPage() {
                                     ))}
                                 </div>
 
-                                {/* ACCIÓN (Opcional visual) */}
                                 <div className="mt-8 pt-6 border-t border-slate-50 flex justify-end">
-                                    <Link href="/educacion-botanica" className="text-[#D48960] text-sm font-bold flex items-center hover:text-[#c27a51] transition-colors">
-                                        Ver guía bótanica <ArrowRight size={16} className="ml-1" ></ArrowRight></Link>
+                                    <button className="text-[#D48960] text-sm font-bold flex items-center hover:text-[#c27a51] transition-colors">
+                                        Ver guía de cuidados <ArrowRight size={16} className="ml-1" />
+                                    </button>
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : (
-                    /* ESTADO VACÍO */
+
                     <div className="bg-white rounded-[3rem] p-20 text-center border-2 border-dashed border-slate-200">
                         <ShoppingBag size={48} className="mx-auto text-slate-200 mb-4" />
                         <h3 className="text-2xl font-bold text-[#1a401f] mb-2">Aún no tienes pedidos</h3>
                         <p className="text-slate-400 mb-8">Tu historial botánico está esperando su primera planta.</p>
-                        <Link href="/marketplace" className="inline-block bg-[#1a401f] text-white px-8 py-3 rounded-full font-bold hover:bg-[#115e3b] transition-colors">
+                        <Link href="/marketplace" className="inline-flex items-center justify-center bg-[#1a401f] text-white px-8 py-3 rounded-full font-bold hover:bg-[#115e3b] transition-colors">
                             Explorar Catálogo
                         </Link>
                     </div>
