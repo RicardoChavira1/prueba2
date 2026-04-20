@@ -325,17 +325,42 @@ export default function App() {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {[
-                                { t: "Guías de Riego", d: "Algoritmos que calculan la hidratación exacta según tu zona.", icon: <Droplets />, c: "text-blue-500" },
-                                { t: "Diagnóstico AI", d: "Sube una foto y detectamos plagas o deficiencias al instante.", icon: <Bug />, c: "text-red-500" },
-                                { t: "Luz y Ambiente", d: "Medimos la exposición lumínica de tus espacios vía smartphone.", icon: <Sun />, c: "text-amber-500" }
+                                {
+                                    t: "Guías de Riego",
+                                    d: "Consejos prácticos y calendarios de riego adaptados a tu clima y tipo de planta.",
+                                    icon: <Droplets />,
+                                    c: "text-blue-500"
+                                },
+                                {
+                                    t: "Diagnóstico Asistido",
+                                    d: "Próximamente: Identifica plagas y enfermedades con ayuda de nuestra comunidad y guías visuales. (Membresía Premium)",
+                                    icon: <Bug />,
+                                    c: "text-red-500",
+                                    premium: true
+                                },
+                                {
+                                    t: "Luz y Ambiente",
+                                    d: "Recomendaciones de ubicación según la luz natural de tu hogar y las necesidades de cada especie.",
+                                    icon: <Sun />,
+                                    c: "text-amber-500"
+                                }
                             ].map((item, idx) => (
-                                <div key={idx} className="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group">
+                                <div key={idx} className="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group relative">
+                                    {/* Badge de Premium (solo para Diagnóstico Asistido) */}
+                                    {item.premium && (
+                                        <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-400 to-amber-500 text-white text-[10px] font-black px-2 py-1 rounded-full shadow-md z-10 flex items-center gap-1">
+                                            <span>⭐</span> PREMIUM (próximamente)
+                                        </div>
+                                    )}
+
                                     <div className={`w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mb-6 group-hover:bg-[#1a401f] group-hover:text-white transition-colors ${item.c}`}>
                                         {React.cloneElement(item.icon, { size: 28 })}
                                     </div>
+
                                     <h3 className="text-xl font-bold text-[#1a401f] mb-3">{item.t}</h3>
                                     <p className="text-slate-500 leading-relaxed text-sm">{item.d}</p>
-                                    <a href="/academia" className="mt-6 flex items-center text-[#D48960] font-bold text-sm cursor-pointer hover:underline">
+
+                                    <a href="/educacion-botanica" className="mt-6 flex items-center text-[#D48960] font-bold text-sm cursor-pointer hover:underline">
                                         Aprender más <ChevronRight size={16} />
                                     </a>
                                 </div>

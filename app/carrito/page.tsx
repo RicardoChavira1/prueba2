@@ -1,6 +1,10 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // IMPORTANTE: Para redirigir al login
+import { auth } from "@/app/lib/firebase"; // IMPORTANTE: Tu conexión a Firebase
+import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth"; // IMPORTANTE: Tipos y observador de Firebase
+
 import {
     ShoppingCart, Search, Trash2, Plus, Minus, CreditCard,
     ShieldCheck, CheckCircle, Loader2, Info
@@ -22,18 +26,25 @@ interface GrupoCarrito extends CartItem {
 }
 
 export default function CarritoPage() {
+    const router = useRouter(); // Inicializamos el router para cambiar de página
+
     // --- ESTADOS BASE ---
     const [carrito, setCarrito] = useState<CartItem[]>([]);
     const [isMounted, setIsMounted] = useState(false);
 
-    // --- ESTADOS DE LA FUNCIÓN DE PAGO (Punto 2) ---
+    // --- ESTADO DE AUTENTICACIÓN ---
+    const [user, setUser] = useState<FirebaseUser | null>(null);
+
+    // --- ESTADOS DE LA FUNCIÓN DE PAGO ---
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-    // --- MANEJO DE HIDRATACIÓN ---
+    // --- MANEJO DE HIDRATACIÓN Y FIREBASE ---
     useEffect(() => {
         setIsMounted(true);
+
+        // 1. Cargamos el carrito de la memoria local
         const carritoGuardado = localStorage.getItem('donni-cart');
         if (carritoGuardado) {
             try {
@@ -49,6 +60,15 @@ export default function CarritoPage() {
                 console.error("Error al cargar el carrito");
             }
         }
+
+        // 2. Activamos el vigilante de Firebase
+        // Esto revisa automáticamente si el usuario ya inició sesión
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser); // Guarda los datos del usuario (o null si no hay)
+        });
+
+        // Limpiamos el vigilante si el componente se desmonta (buena práctica)
+        return () => unsubscribe();
     }, []);
 
     useEffect(() => {
@@ -71,13 +91,12 @@ export default function CarritoPage() {
         return Object.values(grupos);
     }, [carrito]);
 
-    // --- CÁLCULOS DINÁMICOS Y DETALLADOS (Punto 10) ---
+    // --- CÁLCULOS DINÁMICOS ---
     const subtotal = useMemo(() => {
         return carrito.reduce((acc, item) => acc + (Number(item.precio) || 0), 0);
     }, [carrito]);
 
     const envio = subtotal >= 1500 || subtotal === 0 ? 0 : 150;
-    // Agregamos un costo fijo (o variable) por la "Garantía de vida" de las plantas
     const garantia = subtotal > 0 ? 49 : 0;
     const total = subtotal + envio + garantia;
 
@@ -112,35 +131,44 @@ export default function CarritoPage() {
         }
     };
 
+    // --- NUEVA LÓGICA: INTERCEPTOR DE PAGO ---
+    const handlePagarClick = () => {
+        if (user) {
+            // Si el usuario existe en Firebase, abrimos el modal de pago
+            setIsCheckoutOpen(true);
+        } else {
+            // Si no está logueado, lo mandamos al login
+            alert("Para proteger tu compra, inicia sesión o crea una cuenta en DONNI.");
+            router.push('/login'); // Asegúrate de que la ruta coincida con el nombre de tu archivo (ej. /login)
+        }
+    };
+
     // --- LÓGICA DE SIMULACIÓN DE PAGO ---
     const procesarPago = (e: React.FormEvent) => {
-        e.preventDefault(); // Evita recargas
+        e.preventDefault();
         setIsProcessing(true);
 
-        // Simulamos tiempo del banco
         setTimeout(() => {
             setIsProcessing(false);
             setPaymentSuccess(true);
 
-            // 1. CREAMOS EL RECIBO DE LA ORDEN
+            // Guardamos la orden, idealmente aquí podrías incluir el user.uid si tuvieras base de datos
             const nuevaOrden = {
-                id: 'ORD-' + Math.floor(Math.random() * 1000000), // Genera un ID aleatorio tipo ORD-123456
+                id: 'ORD-' + Math.floor(Math.random() * 1000000),
                 fecha: new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }),
                 total: total,
-                items: carrito, // Guardamos lo que compró
-                estado: 'En preparación' // Estatus inicial simulado
+                items: carrito,
+                estado: 'En preparación',
+                comprador: user?.email || 'Desconocido' // Agregamos el correo del comprador como extra
             };
 
-            // 2. LO GUARDAMOS EN LA MEMORIA DEL NAVEGADOR
             const ordenesPrevias = JSON.parse(localStorage.getItem('donni-orders') || '[]');
             localStorage.setItem('donni-orders', JSON.stringify([nuevaOrden, ...ordenesPrevias]));
 
-            // 3. Vaciamos el carrito tras el pago exitoso
             setCarrito([]);
         }, 2500);
     };
 
-    // Prevenir error de hidratación
     if (!isMounted) return null;
 
     return (
@@ -198,12 +226,12 @@ export default function CarritoPage() {
                                 <ShoppingCart size={48} className="mx-auto text-slate-200 mb-4" />
                                 <h3 className="text-2xl font-bold text-[#1a401f] mb-2">Tu carrito está vacío</h3>
                                 <p className="text-slate-400 mb-8">Agrega algunas plantas y comienza tu aventura botánica.</p>
-                                <a href="/" className="inline-block bg-[#1a401f] text-white px-10 py-4 rounded-full font-bold hover:bg-[#115e3b] transition-colors">Explorar Catálogo</a>
+                                <a href="/marketplace" className="inline-block bg-[#1a401f] text-white px-10 py-4 rounded-full font-bold hover:bg-[#115e3b] transition-colors">Explorar Catálogo</a>
                             </div>
                         )}
                     </div>
 
-                    {/* BLOQUE 2: PANEL DE RESUMEN (Punto 10) */}
+                    {/* BLOQUE 2: PANEL DE RESUMEN */}
                     <div className="w-full lg:w-96 shrink-0">
                         <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-100 sticky top-28">
                             <h3 className="text-xl font-black mb-8 flex items-center text-[#1a401f]">
@@ -216,7 +244,6 @@ export default function CarritoPage() {
                                     <span className="text-[#1a401f]">${subtotal.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between font-semibold text-sm">
-                                    {/* CORRECCIÓN 1: Movemos el title al span padre */}
                                     <span className="text-slate-500 flex items-center cursor-help" title="Gratis en compras mayores a $1500">
                                         Envío seguro <Info size={14} className="ml-1 text-slate-300" />
                                     </span>
@@ -225,7 +252,6 @@ export default function CarritoPage() {
                                     </span>
                                 </div>
                                 <div className="flex justify-between font-semibold text-sm">
-                                    {/* CORRECCIÓN 2: Movemos el title al span padre */}
                                     <span className="text-slate-500 flex items-center cursor-help" title="Reemplazo gratuito si la planta llega dañada">
                                         Garantía Botánica <Info size={14} className="ml-1 text-slate-300" />
                                     </span>
@@ -244,8 +270,9 @@ export default function CarritoPage() {
                                 </span>
                             </div>
 
+                            {/* EL INTERCEPTOR: Llamamos a la nueva función handlePagarClick en lugar de abrir el modal directo */}
                             <button
-                                onClick={() => setIsCheckoutOpen(true)}
+                                onClick={handlePagarClick}
                                 disabled={carrito.length === 0}
                                 className="w-full bg-[#D48960] text-white py-5 rounded-full font-black text-lg shadow-lg shadow-[#D48960]/30 hover:bg-[#c27a51] hover:-translate-y-1 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:hover:translate-y-0"
                             >
@@ -268,7 +295,7 @@ export default function CarritoPage() {
                                     <CheckCircle size={40} />
                                 </div>
                                 <h2 className="text-3xl font-black text-[#1a401f] mb-4">¡Pago Exitoso!</h2>
-                                <p className="text-slate-500 mb-8">Tu pedido está siendo procesado. Te enviaremos tu guía de cuidado botánico por correo.</p>
+                                <p className="text-slate-500 mb-8">Tu pedido está siendo procesado. Te enviaremos tu guía de cuidado botánico a <strong>{user?.email}</strong>.</p>
                                 <button
                                     onClick={() => { setIsCheckoutOpen(false); window.location.href = "/mis-pedidos"; }}
                                     className="bg-[#1a401f] text-white px-8 py-3 rounded-full font-bold hover:bg-[#115e3b] transition-colors"
@@ -282,16 +309,16 @@ export default function CarritoPage() {
                                 <div className="flex justify-between items-center mb-6">
                                     <h2 className="text-2xl font-black text-[#1a401f]">Finalizar Compra</h2>
                                     <button onClick={() => setIsCheckoutOpen(false)} className="text-slate-400 hover:text-slate-700 p-1">
-                                        <Trash2 size={24} className="rotate-45" /> {/* Usado como icono de cerrar para ahorrar importaciones */}
+                                        <Trash2 size={24} className="rotate-45" />
                                     </button>
                                 </div>
 
                                 <form onSubmit={procesarPago} className="space-y-4">
-                                    {/* Simulación de Stripe Elements */}
                                     <div className="space-y-3">
                                         <p className="text-sm font-bold text-slate-700">Datos de Envío</p>
-                                        <input required type="text" placeholder="Nombre completo" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] focus:ring-1 focus:ring-[#1a401f] outline-none transition-all" />
-                                        <input required type="email" placeholder="Correo electrónico" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] focus:ring-1 focus:ring-[#1a401f] outline-none transition-all" />
+                                        {/* Autocompletamos el email con el usuario de Firebase si existe */}
+                                        <input required type="text" placeholder="Nombre completo" defaultValue={user?.displayName || ''} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] focus:ring-1 focus:ring-[#1a401f] outline-none transition-all" />
+                                        <input required type="email" placeholder="Correo electrónico" defaultValue={user?.email || ''} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] focus:ring-1 focus:ring-[#1a401f] outline-none transition-all" />
                                         <input required type="text" placeholder="Dirección completa" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#1a401f] focus:ring-1 focus:ring-[#1a401f] outline-none transition-all" />
                                     </div>
 

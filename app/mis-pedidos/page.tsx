@@ -88,9 +88,8 @@ export default function MisPedidosPage() {
 
                                 {/* ACCIÓN (Opcional visual) */}
                                 <div className="mt-8 pt-6 border-t border-slate-50 flex justify-end">
-                                    <button className="text-[#D48960] text-sm font-bold flex items-center hover:text-[#c27a51] transition-colors">
-                                        Ver guía de cuidados <ArrowRight size={16} className="ml-1" />
-                                    </button>
+                                    <Link href="/educacion-botanica" className="text-[#D48960] text-sm font-bold flex items-center hover:text-[#c27a51] transition-colors">
+                                        Ver guía bótanica <ArrowRight size={16} className="ml-1" ></ArrowRight></Link>
                                 </div>
                             </div>
                         ))}
