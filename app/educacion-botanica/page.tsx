@@ -1,36 +1,36 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  ShoppingCart, 
-  User, 
-  Search, 
-  Menu, 
-  X, 
-  ChevronRight, 
-  Clock, 
-  Play,
-  GraduationCap,
-  Droplets,
-  Sun,
-  Bug,
-  Package,
-  CheckCircle,
-  Info,
-  Lightbulb,
-  Globe,
-  Zap,
-  HeartPulse,
-  BookOpen
+import {
+    ShoppingCart,
+    User,
+    Search,
+    Menu,
+    X,
+    ChevronRight,
+    Clock,
+    Play,
+    GraduationCap,
+    Droplets,
+    Sun,
+    Bug,
+    Package,
+    CheckCircle,
+    Info,
+    Lightbulb,
+    Globe,
+    Zap,
+    HeartPulse,
+    BookOpen
 } from 'lucide-react';
 
 // --- ICONOS INTERNOS ---
 const YoutubeIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.42 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.42-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.42 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.42-5.58z" /><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" /></svg>
 );
 
 const ExternalLinkIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
 );
 
 // --- INTERFACES ---
@@ -45,55 +45,55 @@ interface CartItem {
 
 // --- DATOS DE LA ACADEMIA ---
 const CURSOS = [
-    { 
-        id: 1, 
-        titulo: "Guía Completa: Cómo Cuidar tus Plantas de Interior", 
-        nivel: "Principiante", 
-        duracion: "12 min", 
-        tipo: "Video", 
-        categoria: "Salud", 
+    {
+        id: 1,
+        titulo: "Guía Completa: Cómo Cuidar tus Plantas de Interior",
+        nivel: "Principiante",
+        duracion: "12 min",
+        tipo: "Video",
+        categoria: "Salud",
         imagen: "https://images.unsplash.com/photo-1545239351-ef35f43d514b?auto=format&fit=crop&q=80&w=600",
         url: "https://www.youtube.com/watch?v=Y1jTRsBRh3g"
     },
-    { 
-        id: 2, 
-        titulo: "Secretos para Mantener tus Plantas Siempre Verdes", 
-        nivel: "Intermedio", 
-        duracion: "15 min", 
-        tipo: "Video", 
-        categoria: "Agua", 
+    {
+        id: 2,
+        titulo: "Secretos para Mantener tus Plantas Siempre Verdes",
+        nivel: "Intermedio",
+        duracion: "15 min",
+        tipo: "Video",
+        categoria: "Agua",
         imagen: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=600",
-        url: "https://www.youtube.com/watch?v=n7_UBqTYKMo" 
+        url: "https://www.youtube.com/watch?v=n7_UBqTYKMo"
     },
-    { 
-        id: 3, 
-        titulo: "Mantenimiento, Poda y Nutrición Botánica", 
-        nivel: "Avanzado", 
-        duracion: "10 min", 
-        tipo: "Video", 
-        categoria: "Suelo", 
+    {
+        id: 3,
+        titulo: "Mantenimiento, Poda y Nutrición Botánica",
+        nivel: "Avanzado",
+        duracion: "10 min",
+        tipo: "Video",
+        categoria: "Suelo",
         imagen: "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?auto=format&fit=crop&q=80&w=600",
-        url: "https://www.youtube.com/watch?v=6bQPBXFf0zc" 
+        url: "https://www.youtube.com/watch?v=6bQPBXFf0zc"
     },
-    { 
-        id: 4, 
-        titulo: "10 Acciones Esenciales para el Cuidado de las Plantas", 
-        nivel: "Principiante", 
-        duracion: "8 min lectura", 
-        tipo: "Artículo", 
-        categoria: "Salud", 
+    {
+        id: 4,
+        titulo: "10 Acciones Esenciales para el Cuidado de las Plantas",
+        nivel: "Principiante",
+        duracion: "8 min lectura",
+        tipo: "Artículo",
+        categoria: "Salud",
         imagen: "https://images.unsplash.com/photo-1520412099561-648319783e74?auto=format&fit=crop&q=80&w=600",
-        url: "https://www.reddearboles.org/noticias/nwarticle/752/1/10-acciones-para-cuidar-las-plantas" 
+        url: "https://www.reddearboles.org/noticias/nwarticle/752/1/10-acciones-para-cuidar-las-plantas"
     },
-    { 
-        id: 5, 
-        titulo: "Lo que debes saber sobre el riego y la luz", 
-        nivel: "Principiante", 
-        duracion: "5 min lectura", 
-        tipo: "Artículo", 
-        categoria: "Luz", 
+    {
+        id: 5,
+        titulo: "Lo que debes saber sobre el riego y la luz",
+        nivel: "Principiante",
+        duracion: "5 min lectura",
+        tipo: "Artículo",
+        categoria: "Luz",
         imagen: "https://images.unsplash.com/photo-1524486361537-8ad15938e1a3?auto=format&fit=crop&q=80&w=600",
-        url: "https://www.google.com/search?q=como+cuidar+plantas" 
+        url: "https://www.google.com/search?q=como+cuidar+plantas"
     },
 ];
 
@@ -152,7 +152,7 @@ export default function Academia() {
 
     return (
         <div className="min-h-screen bg-[#fafaf9] flex flex-col font-sans selection:bg-[#D48960]/30 text-slate-800">
-            
+
             {/* COMENTADO: HEADER DUPLICADO PARA EVITAR ERRORES DE PARSING */}
             {/* <header className="bg-[#1a401f] text-white shadow-xl sticky top-0 z-50">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -199,9 +199,9 @@ export default function Academia() {
                             </h2>
                             <div className="relative max-w-md mx-auto md:mx-0">
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
-                                <input 
-                                    type="text" 
-                                    placeholder="Buscar tutorial o artículo..." 
+                                <input
+                                    type="text"
+                                    placeholder="Buscar tutorial o artículo..."
                                     className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 pl-12 pr-4 outline-none focus:bg-white focus:text-[#1a401f] transition-all"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -220,7 +220,7 @@ export default function Academia() {
                             { t: "Suelo", i: <Package />, c: "bg-emerald-500" },
                             { t: "Salud", i: <Bug />, c: "bg-red-500" }
                         ].map((tool, idx) => (
-                            <button 
+                            <button
                                 key={idx}
                                 onClick={() => setFiltro(tool.t)}
                                 className={`p-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 hover:scale-105 transition-all border ${filtro === tool.t ? 'bg-[#1a401f] text-white' : 'bg-white border-slate-100'}`}
@@ -247,7 +247,7 @@ export default function Academia() {
                                 <div className="relative h-64 overflow-hidden bg-slate-100">
                                     <a href={curso.url} target="_blank" rel="noopener noreferrer" className="block w-full h-full relative">
                                         <img src={curso.imagen} alt={curso.titulo} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-                                        
+
                                         {curso.tipo === 'Video' ? (
                                             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center">
                                                 <div className="w-20 h-20 bg-[#D48960] rounded-full flex items-center justify-center text-white shadow-2xl group-hover:scale-110 transition-transform border-4 border-white/20">
@@ -265,7 +265,7 @@ export default function Academia() {
                                             </div>
                                         )}
                                     </a>
-                                    
+
                                     <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[9px] font-black uppercase text-[#1a401f] shadow-sm">
                                         {curso.tipo}
                                     </div>
@@ -280,17 +280,16 @@ export default function Academia() {
                                     <h4 className="text-xl font-bold text-[#1a401f] mb-6 group-hover:text-[#D48960] transition-colors line-clamp-2 font-serif leading-tight">
                                         {curso.titulo}
                                     </h4>
-                                    
+
                                     <div className="mt-auto pt-6 border-t border-slate-50">
-                                        <a 
-                                            href={curso.url} 
-                                            target="_blank" 
+                                        <a
+                                            href={curso.url}
+                                            target="_blank"
                                             rel="noopener noreferrer"
-                                            className={`w-full py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 ${
-                                                curso.tipo === 'Video' 
-                                                ? 'bg-slate-50 text-[#1a401f] hover:bg-[#1a401f] hover:text-white' 
-                                                : 'bg-[#D48960]/10 text-[#D48960] hover:bg-[#D48960] hover:text-white'
-                                            }`}
+                                            className={`w-full py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 ${curso.tipo === 'Video'
+                                                    ? 'bg-slate-50 text-[#1a401f] hover:bg-[#1a401f] hover:text-white'
+                                                    : 'bg-[#D48960]/10 text-[#D48960] hover:bg-[#D48960] hover:text-white'
+                                                }`}
                                         >
                                             {curso.tipo === 'Video' ? 'Ver en YouTube' : 'Leer Artículo'}
                                             {curso.tipo === 'Video' ? <YoutubeIcon /> : <ExternalLinkIcon />}
@@ -356,32 +355,6 @@ export default function Academia() {
                     </div>
                 </section>
             </main>
-
-            {/* FOOTER */}
-            <footer className="bg-[#1a401f] text-white/60 py-16">
-                <div className="container mx-auto px-4 text-center">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 text-left">
-                        <div className="col-span-1 md:col-span-2">
-                            <h4 className="text-3xl font-black font-serif text-white mb-6">DONNI</h4>
-                            <p className="max-w-md text-sm leading-relaxed mb-8">
-                                Transformando el sector botánico a través de la educación y tecnología. En DONNI, cada planta es un compromiso de éxito compartido.
-                            </p>
-                        </div>
-                        <div>
-                            <h5 className="text-white font-bold mb-6">Explorar</h5>
-                            <ul className="space-y-4 text-sm font-medium">
-                                <li><a href="/marketplace" className="hover:text-white transition-colors">Marketplace</a></li>
-                                <li><a href="/academia" className="hover:text-white transition-colors">Academia</a></li>
-                                <li><a href="#" className="hover:text-white transition-colors">Contacto</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest font-bold">
-                        <p>© {new Date().getFullYear()} SEER | DONNI. All Rights Reserved.</p>
-                        <p className="mt-4 md:mt-0">Diseñado por el equipo de Donni</p>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 }
