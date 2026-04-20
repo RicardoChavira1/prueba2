@@ -1,20 +1,57 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ShoppingCart, Menu, X, User, Package, Star, LogIn, LogOut } from 'lucide-react';
-// NUEVO: Importamos nuestro hook global
 import { useAuth } from '../app/context/AuthContext';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // NUEVO: Sacamos al usuario y la función de cerrar sesión de la burbuja
   const { user, logout } = useAuth();
+  const [cartCount, setCartCount] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   const brandGreen = "text-[#115e3b]";
   const brandGreenBg = "bg-[#115e3b]";
+
+  // Cargar el contador del carrito desde localStorage
+  useEffect(() => {
+    const loadCartCount = () => {
+      const saved = localStorage.getItem('donni-cart');
+      if (saved) {
+        try {
+          const cart = JSON.parse(saved);
+          setCartCount(cart.length);
+        } catch (e) {
+          setCartCount(0);
+        }
+      } else {
+        setCartCount(0);
+      }
+    };
+
+    loadCartCount();
+    setMounted(true);
+
+    // Escuchar cambios en el carrito (desde otras pestañas o componentes)
+    window.addEventListener('storage', loadCartCount);
+    return () => window.removeEventListener('storage', loadCartCount);
+  }, []);
+
+  // Si no ha montado, renderizamos versión simplificada (evita errores de hidratación)
+  if (!mounted) {
+    return (
+      <header className="bg-white/90 backdrop-blur-md sticky top-0 z-50 w-full border-b border-slate-100 shadow-sm">
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center max-w-7xl">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-slate-100 rounded-full animate-pulse"></div>
+            <h1 className={`text-2xl font-black tracking-tight font-sans ${brandGreen}`}>DONNI</h1>
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="bg-white/90 backdrop-blur-md sticky top-0 z-50 w-full border-b border-slate-100 shadow-sm transition-all duration-300">
@@ -38,22 +75,24 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center space-x-6">
+          {/* CARRITO CON CONTADOR REAL */}
           <Link href="/carrito" className="relative p-2 text-slate-600 hover:text-[#115e3b] transition-colors duration-200 group">
             <ShoppingCart size={24} strokeWidth={1.5} />
-            <div className={`absolute -top-1 -right-1 ${brandGreenBg} text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm group-hover:scale-110 transition-transform`}>0</div>
+            {cartCount > 0 && (
+              <div className={`absolute -top-1 -right-1 ${brandGreenBg} text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm group-hover:scale-110 transition-transform`}>
+                {cartCount}
+              </div>
+            )}
           </Link>
 
           {/* MENÚ DE USUARIO CONDICIONAL */}
           <div className="relative group hidden md:block">
             <div className="p-2 text-slate-600 hover:text-[#115e3b] cursor-pointer transition-colors duration-200 flex items-center gap-2">
               <User size={24} strokeWidth={1.5} />
-              {/* Mostramos el nombre del usuario si está logueado */}
               {user && <span className="text-xs font-bold truncate max-w-[80px]">{user.displayName || 'Usuario'}</span>}
             </div>
 
             <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100 flex flex-col overflow-hidden">
-
-              {/* LÓGICA CONDICIONAL: ¿Está logueado? */}
               {user ? (
                 <>
                   <Link href="/mis-pedidos" className="px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#115e3b] transition-colors flex items-center">
@@ -88,7 +127,22 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Menú Móvil... (puedes aplicar la misma lógica condicional {user ? ... : ...} aquí si lo deseas, o dejarlo como está) */}
+      {/* Menú Móvil - puedes mantenerlo igual o agregar lógica condicional */}
+      {isMenuOpen && (
+        <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-100 p-6 space-y-6 shadow-inner">
+          <Link href="/" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>INICIO</Link>
+          <Link href="/educacion-botanica" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>EDUCACIÓN BOTÁNICA</Link>
+          <Link href="/nosotros" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>NOSOTROS</Link>
+          {user ? (
+            <>
+              <Link href="/mis-pedidos" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>MIS PEDIDOS</Link>
+              <button onClick={() => { logout(); setIsMenuOpen(false); }} className="w-full text-left py-2 text-red-500 font-bold text-sm">CERRAR SESIÓN</button>
+            </>
+          ) : (
+            <Link href="/login" className="block w-full text-center bg-[#115e3b] text-white py-2 rounded-xl font-bold text-sm" onClick={() => setIsMenuOpen(false)}>INICIAR SESIÓN</Link>
+          )}
+        </div>
+      )}
     </header>
   );
 }

@@ -41,7 +41,7 @@ export default function MisPedidosPage() {
         if (!isMounted || loading) return;
 
         if (user) {
-            // 1. Si hay usuario, buscamos SUS pedidos específicos usando su UID
+            //Si hay usuario, buscamos SUS pedidos específicos usando su UID
             const storageKey = `donni-orders-${user.uid}`;
             const savedOrders = localStorage.getItem(storageKey);
 
@@ -53,7 +53,7 @@ export default function MisPedidosPage() {
                 }
             }
         } else {
-            // 2. Si terminó de cargar y NO hay usuario, es un intruso. Lo mandamos al login.
+            //Si terminó de cargar y NO hay usuario, es un intruso. Lo mandamos al login.
             router.push('/login');
         }
     }, [user, loading, isMounted, router]);
@@ -119,9 +119,8 @@ export default function MisPedidosPage() {
                                 </div>
 
                                 <div className="mt-8 pt-6 border-t border-slate-50 flex justify-end">
-                                    <button className="text-[#D48960] text-sm font-bold flex items-center hover:text-[#c27a51] transition-colors">
-                                        Ver guía de cuidados <ArrowRight size={16} className="ml-1" />
-                                    </button>
+                                    <Link href="/educacion-botanica" className="text-[#D48960] text-sm font-bold flex items-center hover:text-[#c27a51] transition-colors">Ver guía bótanica <ArrowRight size={16} className="ml-1" /></Link>
+
                                 </div>
                             </div>
                         ))}
