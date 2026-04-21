@@ -59,7 +59,7 @@ export default function ChatBot() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9999] font-sans">
+ <div className="fixed bottom-6 left-6 z-[9999] font-sans">
       {/* Botón Flotante */}
       {!isOpen && (
         <button
