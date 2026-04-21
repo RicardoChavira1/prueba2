@@ -66,6 +66,7 @@ export default function Header() {
 
         <nav className="hidden lg:flex items-center space-x-10 text-sm font-semibold tracking-wide text-slate-600">
           <Link href="/" className={`hover:${brandGreen} transition-colors duration-200`}>INICIO</Link>
+          <Link href="/marketplace" className={`hover:${brandGreen} transition-colors duration-200`}>MARKETPLACE</Link>
           <Link href="/educacion-botanica" className={`hover:${brandGreen} transition-colors duration-200`}>EDUCACIÓN BOTÁNICA</Link>
           <Link href="/nosotros" className={`hover:${brandGreen} transition-colors duration-200`}>NOSOTROS</Link>
           <div className="flex items-center space-x-2 cursor-not-allowed group">
@@ -131,6 +132,7 @@ export default function Header() {
       {isMenuOpen && (
         <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-100 p-6 space-y-6 shadow-inner">
           <Link href="/" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>INICIO</Link>
+          <Link href="/marketplace" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>MARKETPLACE</Link>
           <Link href="/educacion-botanica" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>EDUCACIÓN BOTÁNICA</Link>
           <Link href="/nosotros" className="block text-sm font-semibold text-slate-700" onClick={() => setIsMenuOpen(false)}>NOSOTROS</Link>
           {user ? (

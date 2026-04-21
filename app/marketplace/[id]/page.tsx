@@ -263,7 +263,7 @@ export default function App() {
             </main>
 
             <footer className="mt-20 py-12 border-t border-slate-100 text-center">
-                 <p className="text-slate-300 text-[10px] font-black uppercase tracking-[0.5em]">Donni conscious botanics © {new Date().getFullYear()}</p>
+                 <p className="text-slate-300 text-[10px] font-black uppercase tracking-[0.5em]">DONNI © {new Date().getFullYear()}</p>
             </footer>
         </div>
     );

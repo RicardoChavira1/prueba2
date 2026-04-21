@@ -39,6 +39,7 @@ export default function Footer() {
                         <h5 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Explorar</h5>
                         <ul className="space-y-4 text-sm font-medium">
                             <li><Link href="/" className="hover:text-white transition-colors flex items-center group"><span className="w-2 h-0.5 bg-[#D48960] mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>Inicio</Link></li>
+                            <li><Link href="/marketplace" className="hover:text-white transition-colors flex items-center group"><span className="w-2 h-0.5 bg-[#D48960] mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>Marketplace</Link></li>
                             <li><Link href="/educacion-botanica" className="hover:text-white transition-colors flex items-center group"><span className="w-2 h-0.5 bg-[#D48960] mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>Educación Botánica</Link></li>
                             <li><Link href="/nosotros" className="hover:text-white transition-colors flex items-center group"><span className="w-2 h-0.5 bg-[#D48960] mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></span>Nosotros</Link></li>
                         </ul>

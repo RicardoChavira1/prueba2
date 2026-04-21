@@ -26,7 +26,7 @@ const CURSOS = [
         duracion: "12 min",
         tipo: "Video",
         categoria: "Salud",
-        imagen: "https://images.unsplash.com/photo-1545239351-ef35f43d514b?auto=format&fit=crop&q=80&w=600",
+        imagen: "https://imgs.search.brave.com/Fnzff8ZGpbYT2f0S1NgXICUMu2SfQLFwe28-B6JaJOA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZXJj/YWRvamFtYWljYW9u/bGluZS5jb20vY2Ru/L3Nob3AvcHJvZHVj/dHMvQ3VuYURlTW9p/c2VzXzE0OGJjMzAw/LTBjY2UtNGEyNi1h/NjhkLTEyZWE3ZWRh/MDE4Mi5qcGc_dj0x/NjkxNDE0ODAxJndp/ZHRoPTE0NDU",
         url: "https://www.youtube.com/watch?v=Y1jTRsBRh3g",
         autor: "Maos Terra, Paisajismo",
         esAutorPropio: false// el true muestra en verde que es de nuestra autoria
@@ -50,7 +50,7 @@ const CURSOS = [
         duracion: "10 min",
         tipo: "Video",
         categoria: "Suelo",
-        imagen: "https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?auto=format&fit=crop&q=80&w=600",
+        imagen: "https://imgs.search.brave.com/sffmhPen-6kK_g24d5Knu5ftYhdjN25_N_SCNSJ7k28/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zZW1i/cmFtb3MuY29tLmNv/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIx/LzExL2FkZW5pdW0t/cGxhbnRhLXVuc3Bs/YXNoLTUzM3g4MDAu/anBn",
         url: "https://www.youtube.com/watch?v=6bQPBXFf0zc",
         autor: "Ecología Verde",
         esAutorPropio: false
@@ -62,7 +62,7 @@ const CURSOS = [
         duracion: "8 min lectura",
         tipo: "Artículo",
         categoria: "Salud",
-        imagen: "https://images.unsplash.com/photo-1520412099561-648319783e74?auto=format&fit=crop&q=80&w=600",
+        imagen: "https://imgs.search.brave.com/iFkb_9ikpAYOIKmWeg9ojGxQg70vwahhaf3iaOztVwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5hZG1hZ2F6aW5l/LmNvbS9waG90b3Mv/NjFmMzNiMjgwODk3/NTE2MTdjZDJmZWFk/L21hc3Rlci93XzE2/MDAsY19saW1pdC9w/ZXhlbHMtZGFyaWEt/c2hldnRzb3ZhLTk3/MDA4OS5qcGc",
         url: "https://www.reddearboles.org/noticias/nwarticle/752/1/10-acciones-para-cuidar-las-plantas",
         autor: "Red de Árboles",
         esAutorPropio: false
